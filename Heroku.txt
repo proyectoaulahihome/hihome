@@ -1,0 +1,6 @@
+Instala heroku-cli
+----------------
+heroku login
+heroku plugins:install heroku-cli-deploy
+heroku war:deploy [nombre] --app [app]
+heroku war:deploy target\bsmarthome-1.0.0.war --app bsmarthome

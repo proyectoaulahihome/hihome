@@ -7,6 +7,7 @@
     <string name="collectionadm">CollectionAdm</string>
     <string name="inboxadm">InboxAdm</string>
     <string name="ordersadm">OrdersAdm</string>
+    <string name="logOff">log off</string>
     <string name="others">Others</string>
     <string name="settings">Settings</string>
     <string name="supportadm">SupportAdm</string>

@@ -16,6 +16,11 @@
         android:icon="@drawable/fire"
         android:title="@string/fire"/>
 
+    <item
+        android:id="@+id/logOff"
+        android:icon="@drawable/ic_baseline_login_24"
+        android:title="@string/logOff"/>
+
 
     <item android:id="@+id/menuother"
         android:title="@string/others">

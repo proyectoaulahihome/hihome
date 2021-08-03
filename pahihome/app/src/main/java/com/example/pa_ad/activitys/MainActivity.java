@@ -3,6 +3,7 @@ package com.example.pa_ad.activitys;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,17 +25,21 @@ import java.io.UnsupportedEncodingException;
 
 public class MainActivity extends AppCompatActivity {
 
- String URL = "https://bsmarthome.herokuapp.com/";
- RequestQueue requestQueue;
- EditText edittextuser;
- EditText edittexpassword;
- Button btnLogin;
- Button btnRegister;
+private String URL = "https://bsmarthome.herokuapp.com/";
+private RequestQueue requestQueue;
+private EditText edittextuser;
+private EditText edittexpassword;
+private Button btnLogin;
+private Button btnRegister;
+
+// variables para mantener sesion
+private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+        init();
         btnLogin = findViewById(R.id.btnLogin);
         btnRegister = findViewById(R.id.btnRegister);
         btnLogin.setOnClickListener(new View.OnClickListener(){
@@ -47,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                         "   \"password\":\""+edittexpassword.getText()+"\"\n" +
                         "}";
                 Log.d("JSONUSER",loginjson);
-                POSTVolley(loginjson);
+                Sesion(loginjson);
             }
         });
         btnRegister.setOnClickListener(new View.OnClickListener(){
@@ -62,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void POSTVolley(String datajson){
+    private void Sesion(String datajson){
 
         //Obtención de datos del web service utilzando Volley
         requestQueue = Volley.newRequestQueue(this);
@@ -80,19 +85,24 @@ public class MainActivity extends AppCompatActivity {
                                 json_transform = new JSONObject(response);
                                 if(json_transform.getString("flag").equals("true")){
                                     Log.d("response",response);
-                                    Intent intent = new Intent(MainActivity.this, principal_activity_main.class);
-                                    Bundle b = new Bundle();
-                                    b.putString("name",json_transform.getJSONObject("data").getString("name"));
-                                    b.putString("last_name",json_transform.getJSONObject("data").getString("last_name"));
-                                    b.putString("type",json_transform.getJSONObject("data").getString("type"));
-                                    b.putString("imguser",json_transform.getJSONObject("data").getString("imguser"));
-                                    intent.putExtras(b);
+                                    SharedPreferences.Editor editor = preferences.edit();
+                                    editor.putString("user_id",json_transform.getJSONObject("data").getString("user_id"));
+                                    editor.putString("name",json_transform.getJSONObject("data").getString("name"));
+                                    editor.putString("last_name",json_transform.getJSONObject("data").getString("last_name"));
+                                    editor.putString("email",json_transform.getJSONObject("data").getString("email"));
+                                    editor.putString("address",json_transform.getJSONObject("data").getString("address"));
+                                    editor.putString("type",json_transform.getJSONObject("data").getString("type"));
+                                    editor.putString("imguser",json_transform.getJSONObject("data").getString("imguser"));
+                                    editor.commit();
+                                    Intent intent = new Intent(MainActivity.this, processActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);
                                 }
                                 else{
                                     Log.d("Data","Credenciales Incorrectas");
                                     Log.d("response",response);
                                 }
+
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -121,6 +131,12 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         requestQueue.add(request);
+    }
+
+    private void init(){
+        btnLogin = findViewById(R.id.btnLogin);
+        btnRegister = findViewById(R.id.btnRegister);
+        preferences = getSharedPreferences("Preferences", MODE_PRIVATE);
     }
 
 }

@@ -13,7 +13,7 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-        <activity android:name=".activitys.principal_activity_main"></activity>
+        <activity android:name=".activitys.processActivity"></activity>
         <activity android:name=".activitys.RegisterActivity"></activity>
         <activity android:name=".activitys.MainActivity">
             <intent-filter>

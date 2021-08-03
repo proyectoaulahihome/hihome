@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">PA_AD</string>
+    <string name="profile">Profile</string>
+    <string name="home">Home</string>
+    <string name="notificacions">Notificacions</string>
+    <string name="fire">Fire</string>
+    <string name="collectionadm">CollectionAdm</string>
+    <string name="inboxadm">InboxAdm</string>
+    <string name="ordersadm">OrdersAdm</string>
+    <string name="others">Others</string>
+    <string name="settings">Settings</string>
+    <string name="supportadm">SupportAdm</string>
+    <string name="aboutusadm">AboutUsAdm</string>
+    <string name="verified">verified</string>
+    <string name="jorge_molina">Jorge_Molina</string>
+    <string name="rol">Rol</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <!-- Register -->
+    <string name="fistnameregister">Fist Name</string>
+    <string name="secondnameregister">Second Name</string>
+    <string name="emailregister">Email</string>
+    <string name="usernameregister">User Name</string>
+    <string name="repeatpasswordregister">Repeat Password</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
+
+</resources>

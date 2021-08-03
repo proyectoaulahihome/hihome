@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menuHome"
+        android:icon="@drawable/profile"
+        android:title="@string/home"/>
+
+    <item
+        android:id="@+id/menuNotificationsAdm"
+        android:icon="@drawable/notifications"
+        android:title="@string/notificacions"/>
+
+    <item
+        android:id="@+id/menuFire"
+        android:icon="@drawable/fire"
+        android:title="@string/fire"/>
+
+
+    <item android:id="@+id/menuother"
+        android:title="@string/others">
+        <menu>
+            <item
+                android:id="@+id/menuSettings"
+                android:icon="@drawable/settings"
+                android:title="@string/settings"/>
+
+        </menu>
+    </item>
+
+</menu>

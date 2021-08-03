@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:andriod="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    andriod:id="@+id/cv"
+    andriod:layout_width="match_parent"
+    andriod:layout_height="wrap_content"
+    andriod:animateLayoutChanges="true"
+    app:cardCornerRadius="25dp"
+    app:cardElevation="6dp"
+    app:cardUseCompatPadding="true">
+    <LinearLayout
+        andriod:layout_width="match_parent"
+        andriod:layout_height="wrap_content"
+        andriod:animateLayoutChanges="true"
+        andriod:orientation="vertical">
+        <RelativeLayout
+            andriod:layout_width="match_parent"
+            andriod:layout_height="wrap_content"
+            andriod:orientation="horizontal"
+            andriod:padding="6dp">
+            <ImageView
+                andriod:id="@+id/HomeImageViewUser"
+                andriod:layout_width="95dp"
+                andriod:layout_height="95dp"
+                andriod:layout_alignParentStart="true"
+                andriod:layout_centerVertical="true"
+                andriod:layout_gravity="center"
+                andriod:paddingLeft="10dp"
+                andriod:paddingRight="10dp"
+                andriod:scaleType="centerCrop"
+                app:srcCompat="@drawable/profile"
+                andriod:layout_alignParentLeft="true" />
+            <LinearLayout
+                andriod:id="@+id/linearLayout"
+                andriod:layout_width="match_parent"
+                andriod:layout_height="wrap_content"
+                andriod:layout_alignParentTop="true"
+                andriod:layout_marginTop="2dp"
+                andriod:layout_toRightOf="@+id/HomeImageViewUser"
+                andriod:orientation="vertical"
+                andriod:layout_marginLeft="4dp">
+                <TextView
+                    andriod:id="@+id/homenameuser"
+                    andriod:layout_width="match_parent"
+                    andriod:layout_height="wrap_content"
+                    andriod:layout_marginBottom="2dp"
+                    andriod:text="Name"
+                    andriod:textColor="@android:color/black"
+                    andriod:textSize="20sp"
+                    andriod:textStyle="bold"/>
+
+                <TextView
+                    andriod:id="@+id/homeemailuser"
+                    andriod:layout_width="match_parent"
+                    andriod:layout_height="wrap_content"
+                    andriod:text="Email"
+                    andriod:textSize="16sp" />
+                <TextView
+                    andriod:id="@+id/homeaddressuser"
+                    andriod:layout_width="match_parent"
+                    andriod:layout_height="wrap_content"
+                    andriod:text="Address"
+                    andriod:textSize="16sp" />
+
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

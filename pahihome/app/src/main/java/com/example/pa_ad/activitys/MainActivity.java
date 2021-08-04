@@ -40,8 +40,6 @@ private SharedPreferences preferences;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         init();
-        btnLogin = findViewById(R.id.btnLogin);
-        btnRegister = findViewById(R.id.btnRegister);
         btnLogin.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -63,10 +61,7 @@ private SharedPreferences preferences;
                 startActivity(intent);
             }
         });
-
-
     }
-
     private void Sesion(String datajson){
 
         //Obtención de datos del web service utilzando Volley

@@ -1,0 +1,57 @@
+----------------------Device------------------------------
+----------------INSERT----------------
+
+CREATE OR REPLACE FUNCTION public.insertdevice(
+	message_xml xml)
+    RETURNS text
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE 
+AS $BODY$
+
+  DECLARE root_xpath TEXT = '/device/';
+  resul integer = 0;
+  BEGIN
+    INSERT INTO public.tbldevice(user_id,namedevice,mac)values
+			((xpath(root_xpath|| 'user_id/text()', message_xml))[1]::text::integer,
+			 (xpath(root_xpath|| 'namedevice/text()', message_xml))[1],
+			 (xpath(root_xpath|| 'mac/text()', message_xml))[1]);
+	return resul;																			 
+  END;
+$BODY$;
+
+ALTER FUNCTION public.insertdevice(xml)
+    OWNER TO pdckzidnkeycgc;
+
+----------------DELETE----------------
+----------------UPDATE----------------
+----------------------Data------------------------------
+----------------INSERT----------------
+
+CREATE OR REPLACE FUNCTION public.insertdata(
+	message_xml xml)
+    RETURNS text
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE 
+AS $BODY$
+
+  DECLARE root_xpath TEXT = '/data/';
+  resul integer = 0;
+  BEGIN
+    INSERT INTO public.tbldata(device_id,mqgas,mlx,mqhumo)values
+			((xpath(root_xpath|| 'device_id/text()', message_xml))[1]::text::integer,
+			 (xpath(root_xpath|| 'mqgas/text()', message_xml))[1]::text::numeric,
+			 (xpath(root_xpath|| 'mlx/text()', message_xml))[1]::text::numeric,
+			(xpath(root_xpath|| 'mqhumo/text()', message_xml))[1]::text::numeric);
+	return resul;																			 
+  END;
+$BODY$;
+
+ALTER FUNCTION public.insertdata(xml)
+    OWNER TO pdckzidnkeycgc;
+
+----------------DELETE----------------
+----------------UPDATE----------------

@@ -1,9 +1,13 @@
 package com.example.pa_ad.fragments;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,8 +24,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.pa_ad.R;
+import com.example.pa_ad.RetrofitClient;
 import com.example.pa_ad.adapters.ListAdapterHome;
+import com.example.pa_ad.interfaces.Api;
 import com.example.pa_ad.interfaces.iCommunicates_Fragments;
+import com.example.pa_ad.models.FetchUserResponse;
 import com.example.pa_ad.models.UserModel;
 
 import org.json.JSONArray;
@@ -31,16 +38,25 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class HomeFragment extends Fragment {
 
-    String URL = "https://bsmarthome.herokuapp.com/";
-    RequestQueue requestQueue;
-    List<UserModel> ListElementsHome;
-    RecyclerView recyclerViewHome;
-
+    private String URL = "https://bsmarthome.herokuapp.com/";
+    private RequestQueue requestQueue;
+     List<UserModel> ListElementsHome;
+    private RecyclerView recyclerViewHome;
+    private ListAdapterHome listAdapterHome;
+    public String json;
     //referencias para comunicar fragments
-    Activity activitys;
-    iCommunicates_Fragments interfacecommunicates_Fragments;
+    private Activity activitys;
+    private boolean dataIsLoaded;
+    private iCommunicates_Fragments interfacecommunicates_Fragments;
+    private ProgressDialog proDialog;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -49,17 +65,25 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view =inflater.inflate(R.layout.fragment_home, container, false);
-        ListElementsHome = new ArrayList<>();
         recyclerViewHome= view.findViewById(R.id.ListRecyclerViewHome);
-        recyclerViewHome.setLayoutManager(new LinearLayoutManager(getContext()));
-       // GetUserVolley();
-        cargarLista();
-        ListAdapterHome listAdapterHome = new ListAdapterHome(ListElementsHome, getContext());
-        recyclerViewHome.setAdapter(listAdapterHome);
+      //  dataIsLoaded = false;
+      //  requestQueue = Volley.newRequestQueue(getContext());
+      //  ListElementsHome = new ArrayList<>();
+        proDialog = new ProgressDialog(getContext());
+        proDialog.setTitle("Consultas");
+        proDialog.setMessage("Cargando consultas espere por favor...");
+        proDialog.show();
 
-        listAdapterHome.setOnClickListener(new View.OnClickListener() {
+       // GetUserVolley();
+
+
+      //  listAdapterHome = new ListAdapterHome(ListElementsHome, getContext());
+       // recyclerViewHome.setAdapter(listAdapterHome);
+
+     /*   listAdapterHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(),"Selecciona: " +
@@ -67,17 +91,44 @@ public class HomeFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
                 interfacecommunicates_Fragments.SendHome(ListElementsHome.get(recyclerViewHome.getChildAdapterPosition(view)));
             }
-        });
+        }); */
         return view;
 
     }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        recyclerViewHome.setHasFixedSize(true);
+        recyclerViewHome.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        //retrofit
+
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("https://bsmarthome.herokuapp.com/webresources/")
+                .addConverterFactory(GsonConverterFactory.create()).build();
+        Api userapi = retrofit.create(Api.class);
+        Call<List<UserModel>> call = userapi.fetchusers();
+        call.enqueue(new Callback<List<UserModel>>() {
+             @Override
+             public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
+                 proDialog.hide();
+                 ListElementsHome = response.body();
+                 recyclerViewHome.setAdapter(new ListAdapterHome(ListElementsHome, getActivity()));
+             }
+
+             @Override
+             public void onFailure(Call<List<UserModel>> call, Throwable t) {
+
+             }
+         });
+    }
+
     public void cargarLista(){
         ListElementsHome.add(new UserModel("1","Martha","Guerrero","martha-guerrero@hotmail.com","8d23cf6c86e834a7aa6eded54c26ce2bb2e74903538c61bdd5d2197997ab2f72","Guayaquil, Urdesa","Usuario","https://elclosetlgbt.com/wp-content/uploads/2020/01/WhatsApp-Image-2020-01-13-at-15.42.30.jpeg"));
         ListElementsHome.add(new UserModel("2","Jorge","Molina","jorge-molina@hotmail.com","a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3","Quevedo, Guayacan","Administrador","https://i.pinimg.com/736x/66/8e/db/668edbd6920ecc00d085d484f6e54c5d.jpg"));
     }
 
-    private void GetUserVolley(){
-        boolean variable=false;
+    private void getuser(){
         requestQueue = Volley.newRequestQueue(getContext());
         StringRequest request = new StringRequest(
                 Request.Method.GET,
@@ -86,8 +137,57 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onResponse(String response) {
                         int size = response.length();
+                        if (size > 0){
+                            try {
+                                JSONArray Ja = new JSONArray(response);
+                                for(int i=0; i < Ja.length(); i++)
+                                {
+                                    JSONObject jsonObject = new JSONObject(Ja.get(i).toString());
+                                    Log.d("user_id",jsonObject.getString("user_id"));
+                                    Log.d("name",jsonObject.getString("name"));
+                                    Log.d("last_name",jsonObject.getString("last_name"));
+                                    Log.d("email",jsonObject.getString("email"));
+                                    Log.d("password",jsonObject.getString("password"));
+                                    Log.d("address",jsonObject.getString("address"));
+                                    Log.d("type",jsonObject.getString("type"));
+                                    Log.d("imguser",jsonObject.getString("imguser"));
+                                    ListElementsHome.add(new UserModel(jsonObject.getString("user_id"),
+                                    jsonObject.getString("name"),
+                                    jsonObject.getString("last_name"),
+                                    jsonObject.getString("email"),
+                                    jsonObject.getString("password"),
+                                    jsonObject.getString("address"),
+                                    jsonObject.getString("type"),
+                                    jsonObject.getString("imguser")));
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }
+        );
+        requestQueue.add(request);
+    }
+
+    public void GetUserVolley(){
+        boolean variable=false;
+
+        StringRequest request = new StringRequest(
+                Request.Method.GET,
+                URL+"webresources/users",
+                new com.android.volley.Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        int size = response.length();
+                        json = response;
                         Log.d("json",response);
-                        Log.d("size",String.valueOf(size));
                         try {
                             if (size > 0)
                             {
@@ -95,8 +195,7 @@ public class HomeFragment extends Fragment {
                                 for(int i=0; i < Ja.length(); i++)
                                 {
                                     JSONObject jsonObject = new JSONObject(Ja.get(i).toString());
-                                    ListElementsHome.add(new UserModel(
-                                            jsonObject.getString("user_id"),
+                                    ListElementsHome.add(new UserModel(jsonObject.getString("user_id"),
                                             jsonObject.getString("name"),
                                             jsonObject.getString("last_name"),
                                             jsonObject.getString("email"),
@@ -104,16 +203,9 @@ public class HomeFragment extends Fragment {
                                             jsonObject.getString("address"),
                                             jsonObject.getString("type"),
                                             jsonObject.getString("imguser")));
-                                 /*   Log.d("user_id",jsonObject.getString("user_id"));
-                                    Log.d("name",jsonObject.getString("name"));
-                                    Log.d("last_name",jsonObject.getString("last_name"));
-                                    Log.d("email",jsonObject.getString("email"));
-                                    Log.d("password",jsonObject.getString("password"));
-                                    Log.d("address",jsonObject.getString("address"));
-                                    Log.d("type",jsonObject.getString("type"));
-                                    Log.d("imguser",jsonObject.getString("imguser")); */
                                 }
                                 Log.d("lista",String.valueOf(ListElementsHome.size()));
+                                dataIsLoaded = true;
                             }
 
                         } catch (JSONException e) {
@@ -131,9 +223,6 @@ public class HomeFragment extends Fragment {
         requestQueue.add(request);
     }
 
-    public void ShowData(){
-
-    }
     @Override
     public void onAttach(Context context){
         super.onAttach(context);

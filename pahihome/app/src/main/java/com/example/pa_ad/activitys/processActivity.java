@@ -82,7 +82,6 @@ private SharedPreferences preferences;
             drawerLayout.addDrawerListener(actionBarDrawerToggle);
             actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
             actionBarDrawerToggle.syncState();
-
             fragmentManager = getSupportFragmentManager();//cargar fragment principal en la actividad
             fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.container,new HomeFragment());

@@ -68,7 +68,6 @@ private SharedPreferences preferences;
         requestQueue = Volley.newRequestQueue(this);
         StringRequest request = new StringRequest(
                 Request.Method.POST,URL+"webresources/users/logIn",
-                //DataStatic.gerUrlApi("persona/logIn"),
                 new com.android.volley.Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

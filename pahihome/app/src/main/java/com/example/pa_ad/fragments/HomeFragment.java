@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -25,6 +29,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.pa_ad.R;
 import com.example.pa_ad.RetrofitClient;
+import com.example.pa_ad.activitys.MainActivity;
+import com.example.pa_ad.activitys.RegisterActivity;
 import com.example.pa_ad.adapters.ListAdapterHome;
 import com.example.pa_ad.interfaces.Api;
 import com.example.pa_ad.interfaces.iCommunicates_Fragments;
@@ -57,6 +63,9 @@ public class HomeFragment extends Fragment {
     private boolean dataIsLoaded;
     private iCommunicates_Fragments interfacecommunicates_Fragments;
     private ProgressDialog proDialog;
+    // variables para mantener sesion
+    private SharedPreferences preferences;
+    private String user_id, name, last_name, email, address, type, imguser;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -68,59 +77,77 @@ public class HomeFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View view =inflater.inflate(R.layout.fragment_home, container, false);
-        recyclerViewHome= view.findViewById(R.id.ListRecyclerViewHome);
-      //  dataIsLoaded = false;
-      //  requestQueue = Volley.newRequestQueue(getContext());
-      //  ListElementsHome = new ArrayList<>();
-        proDialog = new ProgressDialog(getContext());
-        proDialog.setTitle("Consultas");
-        proDialog.setMessage("Cargando consultas espere por favor...");
-        proDialog.show();
-
-       // GetUserVolley();
-
-
-      //  listAdapterHome = new ListAdapterHome(ListElementsHome, getContext());
-       // recyclerViewHome.setAdapter(listAdapterHome);
-
-     /*   listAdapterHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(),"Selecciona: " +
-                        ListElementsHome.get(recyclerViewHome.getChildAdapterPosition(view)).getName(),
-                        Toast.LENGTH_SHORT).show();
-                interfacecommunicates_Fragments.SendHome(ListElementsHome.get(recyclerViewHome.getChildAdapterPosition(view)));
-            }
-        }); */
+        init();
+        sessionuser();
         return view;
+    }
+    private void init(){
 
+        preferences = this.getActivity().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+    }
+
+    public void sessionuser(){
+        user_id = preferences.getString("user_id",null);
+        name= preferences.getString("name",null);
+        last_name= preferences.getString("last_name",null);
+        email= preferences.getString("email",null);
+        address= preferences.getString("address",null);
+        type= preferences.getString("type",null);
+        imguser= preferences.getString("imguser",null);
+    }
+
+    private void gologin() {
+        Intent i = new Intent(getActivity(), MainActivity.class);
+        // bandera para que no se creen nuevas actividades innecesarias
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
     }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerViewHome.setHasFixedSize(true);
-        recyclerViewHome.setLayoutManager(new LinearLayoutManager(getContext()));
+        if(user_id != null && email != null){
+            proDialog = new ProgressDialog(getActivity());
+            proDialog.setTitle("Consultas");
+            proDialog.setMessage("Cargando consultas espere por favor...");
+            proDialog.show();
+            recyclerViewHome= view.findViewById(R.id.ListRecyclerViewHome);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+            recyclerViewHome.setLayoutManager(layoutManager);
+            recyclerViewHome.setHasFixedSize(true);
 
-        //retrofit
+            //  recyclerViewHome.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("https://bsmarthome.herokuapp.com/webresources/")
-                .addConverterFactory(GsonConverterFactory.create()).build();
-        Api userapi = retrofit.create(Api.class);
-        Call<List<UserModel>> call = userapi.fetchusers();
-        call.enqueue(new Callback<List<UserModel>>() {
-             @Override
-             public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
-                 proDialog.hide();
-                 ListElementsHome = response.body();
-                 recyclerViewHome.setAdapter(new ListAdapterHome(ListElementsHome, getActivity()));
-             }
+            Call<List<UserModel>> call = RetrofitClient.getInstance().getApi().fetchusers();
+            call.enqueue(new Callback<List<UserModel>>() {
+                @Override
+                public void onResponse(Call<List<UserModel>> call, Response<List<UserModel>> response) {
+                    proDialog.dismiss();
+                    ListElementsHome = response.body();
+                    listAdapterHome  = new ListAdapterHome(ListElementsHome, getActivity());
+                    recyclerViewHome.setAdapter(listAdapterHome);
 
-             @Override
-             public void onFailure(Call<List<UserModel>> call, Throwable t) {
+                    listAdapterHome.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(getActivity(),"Selecciona: " +
+                                            ListElementsHome.get(recyclerViewHome.getChildAdapterPosition(view)).getName(),
+                                    Toast.LENGTH_SHORT).show();
+                            interfacecommunicates_Fragments.SendHome(ListElementsHome.get(recyclerViewHome.getChildAdapterPosition(view)));
+                        }
+                    });
+                }
+                @Override
+                public void onFailure(Call<List<UserModel>> call, Throwable t) {
 
-             }
-         });
+                }
+            });
+        }else{
+            Toast.makeText(getActivity(), "No session", Toast.LENGTH_LONG).show();
+            gologin();
+        }
     }
 
     public void cargarLista(){
@@ -163,53 +190,6 @@ public class HomeFragment extends Fragment {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                        }
-                    }
-                },
-                new com.android.volley.Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                    }
-                }
-        );
-        requestQueue.add(request);
-    }
-
-    public void GetUserVolley(){
-        boolean variable=false;
-
-        StringRequest request = new StringRequest(
-                Request.Method.GET,
-                URL+"webresources/users",
-                new com.android.volley.Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        int size = response.length();
-                        json = response;
-                        Log.d("json",response);
-                        try {
-                            if (size > 0)
-                            {
-                                JSONArray Ja = new JSONArray(response);
-                                for(int i=0; i < Ja.length(); i++)
-                                {
-                                    JSONObject jsonObject = new JSONObject(Ja.get(i).toString());
-                                    ListElementsHome.add(new UserModel(jsonObject.getString("user_id"),
-                                            jsonObject.getString("name"),
-                                            jsonObject.getString("last_name"),
-                                            jsonObject.getString("email"),
-                                            jsonObject.getString("password"),
-                                            jsonObject.getString("address"),
-                                            jsonObject.getString("type"),
-                                            jsonObject.getString("imguser")));
-                                }
-                                Log.d("lista",String.valueOf(ListElementsHome.size()));
-                                dataIsLoaded = true;
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
                     }
                 },

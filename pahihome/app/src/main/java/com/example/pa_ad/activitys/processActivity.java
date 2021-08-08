@@ -1,7 +1,9 @@
 package com.example.pa_ad.activitys;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -39,8 +42,9 @@ private FragmentTransaction fragmentTransaction;
 private DetailHomeFragment detailHomeFragment;
 //variable del fragment detalleNotifications
 private DetailNotificationFragment detailNotificationFragment;
-// variable sesion
+// variables para mantener sesion
 private SharedPreferences preferences;
+private String user_id, name, last_name, email, address, type, imguser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +52,7 @@ private SharedPreferences preferences;
         setContentView(R.layout.process_activity);
 
         init();
-        // variables de sesion ---------------------------------------------
-        String user_id = preferences.getString("user_id",null);
-        String name= preferences.getString("name",null);
-        String last_name= preferences.getString("last_name",null);
-        String email= preferences.getString("email",null);
-        String address= preferences.getString("address",null);
-        String type= preferences.getString("type",null);
-        String imguser= preferences.getString("imguser",null);
-        // fin variables de sesion ---------------------------------------------
+        sessionuser();
 
         if(user_id != null && email != null){
 
@@ -103,6 +99,20 @@ private SharedPreferences preferences;
                 Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }
+    public void sessionuser(){
+        user_id = preferences.getString("user_id",null);
+        name= preferences.getString("name",null);
+        last_name= preferences.getString("last_name",null);
+        email= preferences.getString("email",null);
+        address= preferences.getString("address",null);
+        type= preferences.getString("type",null);
+        imguser= preferences.getString("imguser",null);
+    }
+    private void logoff(){
+        preferences.edit().clear().apply();
+        gologin();
+        Toast.makeText(processActivity.this, "Closed session", Toast.LENGTH_LONG).show();
+    }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -127,7 +137,7 @@ private SharedPreferences preferences;
                 Toast.makeText(processActivity.this, "Fire", Toast.LENGTH_LONG).show();
                 break;
             case R.id.logOff:
-                gologin();// vaciar las variables de session
+                logoff();// vaciar las variables de session
                 Toast.makeText(processActivity.this, "Log off", Toast.LENGTH_LONG).show();
                 break;
         }
@@ -149,6 +159,34 @@ private SharedPreferences preferences;
     @Override
     public void SenNotification(NotificationsModel notificationsModel) {
 
+    }
+
+    // Se controla la pulsación del botón atrás
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == event.KEYCODE_BACK){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Do you want to exit SmartMask?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(Intent.ACTION_MAIN);
+                            intent.addCategory(Intent.CATEGORY_HOME);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            logoff();
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            builder.show();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
 

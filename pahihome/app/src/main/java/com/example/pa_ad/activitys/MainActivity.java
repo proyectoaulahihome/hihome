@@ -27,24 +27,23 @@ public class MainActivity extends AppCompatActivity {
 
 private String URL = "https://bsmarthome.herokuapp.com/";
 private RequestQueue requestQueue;
-private EditText edittextuser;
-private EditText edittexpassword;
-private Button btnLogin;
-private Button btnRegister;
+private EditText edittextuser,edittexpassword;
+private Button btnLogin, btnRegister;
 
 // variables para mantener sesion
 private SharedPreferences preferences;
+private String user_id, name, last_name, email, address, type, imguser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         init();
+        validatesesion();
         btnLogin.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                edittextuser =  (EditText) findViewById(R.id.edittextuser);
-                edittexpassword =  (EditText)findViewById(R.id.edittexpassword);
+
                 String loginjson = "{\n" +
                         "   \"email\":\""+edittextuser.getText()+"\",\n" +
                         "   \"password\":\""+edittexpassword.getText()+"\"\n" +
@@ -130,7 +129,33 @@ private SharedPreferences preferences;
     private void init(){
         btnLogin = findViewById(R.id.btnLogin);
         btnRegister = findViewById(R.id.btnRegister);
+        edittextuser =  (EditText) findViewById(R.id.edittextuser);
+        edittexpassword =  (EditText)findViewById(R.id.edittexpassword);
         preferences = getSharedPreferences("Preferences", MODE_PRIVATE);
+    }
+    private void validatesesion(){
+        sessionuser();
+        if (user_id != null && email != null) {
+            goMenu();
+        }
+    }
+
+    public void sessionuser(){
+        user_id = preferences.getString("user_id",null);
+        name= preferences.getString("name",null);
+        last_name= preferences.getString("last_name",null);
+        email= preferences.getString("email",null);
+        address= preferences.getString("address",null);
+        type= preferences.getString("type",null);
+        imguser= preferences.getString("imguser",null);
+    }
+    private void goMenu(){
+        Intent i = new Intent(this, processActivity.class);
+        // bandera para que no se creen nuevas actividades innecesarias
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
     }
 
 }

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="15dp"
         android:text="Create your Account"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
@@ -21,16 +21,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <EditText
         android:id="@+id/fistnameregister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="70dp"
         android:layout_marginEnd="32dp"
         android:backgroundTint="@color/colorPrimary"
         android:ems="10"
-
         android:hint="@string/fistnameregister"
         android:inputType="textPersonName"
         android:textColor="#FFFFFF"
@@ -38,10 +38,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txttituleregistrer" />
-
-
     <EditText
-        android:id="@+id/secondnameregister"
+        android:id="@+id/lastnameregister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -49,7 +47,7 @@
         android:layout_marginEnd="32dp"
         android:backgroundTint="@color/colorPrimary"
         android:ems="10"
-        android:hint="@string/secondnameregister"
+        android:hint="@string/lastameregister"
         android:inputType="textPassword"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
@@ -72,10 +70,10 @@
         android:textColorHint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/secondnameregister" />
+        app:layout_constraintTop_toBottomOf="@+id/lastnameregister" />
 
     <EditText
-        android:id="@+id/usernameregister"
+        android:id="@+id/addressregister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -83,7 +81,7 @@
         android:layout_marginEnd="32dp"
         android:backgroundTint="@color/colorPrimary"
         android:ems="10"
-        android:hint="@string/usernameregister"
+        android:hint="@string/emailregister"
         android:inputType="textPassword"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
@@ -91,6 +89,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/emailregister" />
 
+    <EditText
+        android:id="@+id/passwordregister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:ems="10"
+        android:hint="@string/repeatpasswordregister"
+        android:inputType="textPassword"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addressregister" />
     <EditText
         android:id="@+id/repeatpasswordregister"
         android:layout_width="match_parent"
@@ -106,17 +120,18 @@
         android:textColorHint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/usernameregister" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordregister" />
 
     <Button
-        android:id="@+id/btnsingup"
+        android:id="@+id/btnnextdevice"
         android:layout_width="match_parent"
         android:layout_height="49dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/button_rounded"
-        android:text="sing up"
+        android:text="Next"
+        android:textSize="20sp"
         android:textColor="@color/colorWhite"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

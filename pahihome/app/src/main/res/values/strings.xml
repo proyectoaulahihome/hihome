@@ -20,9 +20,11 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <!-- Register -->
+    <string name="macdivice">Mac for Device</string>
     <string name="fistnameregister">Fist Name</string>
-    <string name="secondnameregister">Second Name</string>
+    <string name="lastameregister">Last Name</string>
     <string name="emailregister">Email</string>
+    <string name="addressregister">House address</string>
     <string name="usernameregister">User Name</string>
     <string name="repeatpasswordregister">Repeat Password</string>
     <string name="open">open</string>

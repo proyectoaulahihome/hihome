@@ -3,7 +3,7 @@
     <string name="profile">Profile</string>
     <string name="home">Home</string>
     <string name="notificacions">Notificacions</string>
-    <string name="fire">Fire</string>
+    <string name="realtimecontrol">Real-time Control</string>
     <string name="collectionadm">CollectionAdm</string>
     <string name="inboxadm">InboxAdm</string>
     <string name="ordersadm">OrdersAdm</string>
@@ -22,6 +22,7 @@
     <!-- Register -->
     <string name="macdivice">Mac for Device</string>
     <string name="fistnameregister">Fist Name</string>
+    <string name="namedevice">IoT device name</string>
     <string name="lastameregister">Last Name</string>
     <string name="emailregister">Email</string>
     <string name="addressregister">House address</string>

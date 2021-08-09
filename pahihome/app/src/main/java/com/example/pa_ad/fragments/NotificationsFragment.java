@@ -49,13 +49,13 @@ public class NotificationsFragment extends Fragment {
 
     private List<NotificationsModel> GetData() {
         ListElementsnotifications=new ArrayList<>();
-        ListElementsnotifications.add(new NotificationsModel(1,R.drawable.notifications,"Nuevo ingreso al hogar","Juan ingresó el día de hoy"));
-        ListElementsnotifications.add(new NotificationsModel(2,R.drawable.notifications,"Nuevo ingreso al hogar","Marta ingresó el día de hoy"));
-        ListElementsnotifications.add(new NotificationsModel(3,R.drawable.notifications,"Nuevo ingreso al hogar","Pedro ingresó el día de hoy"));
-        ListElementsnotifications.add(new NotificationsModel(4,R.drawable.notifications,"Nuevo ingreso al hogar","Roberto ingresó el día de ayer"));
-        ListElementsnotifications.add(new NotificationsModel(5,R.drawable.notifications,"Nuevo ingreso al hogar","Carlos ingresó el día de ayer"));
-        ListElementsnotifications.add(new NotificationsModel(6,R.drawable.notifications,"Nuevo ingreso al hogar","Victor ingresó hace 2 días"));
-        ListElementsnotifications.add(new NotificationsModel(7,R.drawable.notifications,"Nuevo ingreso al hogar","Jorge ingresó hace 2 días"));
+        ListElementsnotifications.add(new NotificationsModel(1,R.drawable.notifications,"Nuevo ingreso al hogar","Ingresó el día de hoy"));
+        ListElementsnotifications.add(new NotificationsModel(2,R.drawable.notifications,"Nuevo ingreso al hogar","Ingresó el día de hoy"));
+        ListElementsnotifications.add(new NotificationsModel(3,R.drawable.notifications,"Nuevo ingreso al hogar","Ingresó el día de hoy"));
+        ListElementsnotifications.add(new NotificationsModel(4,R.drawable.notifications,"Nuevo ingreso al hogar","Ingresó el día de ayer"));
+        ListElementsnotifications.add(new NotificationsModel(5,R.drawable.notifications,"Nuevo ingreso al hogar","Ingresó el día de ayer"));
+        ListElementsnotifications.add(new NotificationsModel(6,R.drawable.notifications,"Nuevo ingreso al hogar","Ingresó hace 2 días"));
+        ListElementsnotifications.add(new NotificationsModel(7,R.drawable.notifications,"Nuevo ingreso al hogar","Ingresó hace 2 días"));
 
         return ListElementsnotifications;
     }

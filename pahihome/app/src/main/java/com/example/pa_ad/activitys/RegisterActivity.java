@@ -39,14 +39,14 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(!firstnameregister.getText().toString().equals("") && !lastnameregister.getText().toString().equals("")
                         && !emailregister.getText().toString().equals("") && !passwordregister.getText().toString().equals("")
-                        && !repeatpasswordregister.getText().toString().equals("") && addressregister.getText().toString().equals("")) {
-                    if(passwordregister.getText().toString().equals(repeatpasswordregister.getText().toString())){
-                        goRegisterDevice();
-                    }
-                    else{
-                        Toast.makeText(RegisterActivity.this,
-                                "Confirmation of incorrect password", Toast.LENGTH_LONG).show();
-                    }
+                        && !repeatpasswordregister.getText().toString().equals("") && !addressregister.getText().toString().equals("")) {
+                        if(passwordregister.getText().toString().equals(repeatpasswordregister.getText().toString())){
+                            goRegisterDevice();
+                        }
+                        else{
+                            Toast.makeText(RegisterActivity.this,
+                                    "Confirmation of incorrect password", Toast.LENGTH_LONG).show();
+                        }
                 }else{
                     Toast.makeText(RegisterActivity.this,
                             "Empty fields", Toast.LENGTH_LONG).show();

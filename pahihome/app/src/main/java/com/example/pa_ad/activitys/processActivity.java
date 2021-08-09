@@ -25,6 +25,7 @@ import com.example.pa_ad.fragments.DetailHomeFragment;
 import com.example.pa_ad.fragments.DetailNotificationFragment;
 import com.example.pa_ad.fragments.HomeFragment;
 import com.example.pa_ad.fragments.NotificationsFragment;
+import com.example.pa_ad.fragments.RealTimeControlFragment;
 import com.example.pa_ad.interfaces.iCommunicates_Fragments;
 import com.example.pa_ad.models.NotificationsModel;
 import com.example.pa_ad.models.UserModel;
@@ -133,8 +134,12 @@ private String user_id, name, last_name, email, address, type, imguser;
                 fragmentTransaction.commit();
                 Toast.makeText(processActivity.this, "Notifications", Toast.LENGTH_LONG).show();
                 break;
-            case R.id.menuFire:
-                Toast.makeText(processActivity.this, "Fire", Toast.LENGTH_LONG).show();
+            case R.id.menurealtimecontrol:
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.container,new RealTimeControlFragment());
+                fragmentTransaction.commit();
+                Toast.makeText(processActivity.this, "Real-time Control", Toast.LENGTH_LONG).show();
                 break;
             case R.id.logOff:
                 logoff();// vaciar las variables de session
@@ -166,7 +171,7 @@ private String user_id, name, last_name, email, address, type, imguser;
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == event.KEYCODE_BACK){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Do you want to exit SmartMask?")
+            builder.setMessage("Do you want to exit hiHome?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

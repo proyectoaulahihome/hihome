@@ -110,8 +110,8 @@ public class HomeFragment extends Fragment {
 
         if(user_id != null && email != null){
             proDialog = new ProgressDialog(getActivity());
-            proDialog.setTitle("Consultas");
-            proDialog.setMessage("Cargando consultas espere por favor...");
+            proDialog.setTitle("Data");
+            proDialog.setMessage("Loading data please wait...");
             proDialog.show();
             recyclerViewHome= view.findViewById(R.id.ListRecyclerViewHome);
             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());

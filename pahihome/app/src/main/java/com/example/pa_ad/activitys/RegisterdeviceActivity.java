@@ -16,6 +16,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.pa_ad.R;
@@ -24,30 +25,36 @@ import com.example.pa_ad.RetrofitClientPython;
 import com.example.pa_ad.models.ReconocimientoModel;
 import com.example.pa_ad.models.RegistrationModel;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Collections;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
+
+import com.android.volley.Response;
 
 public class RegisterdeviceActivity extends AppCompatActivity {
     private Bundle bundle;
-    private EditText macdevice, namedivice;
+    private EditText namedivice;
     private Button btnsingup;
     private ProgressDialog proDialog;
     private String URL = "https://bsmarthome.herokuapp.com/";
     private RequestQueue requestQueue;
     // variables para mantener sesion
     private SharedPreferences preferences;
-    private String user_id, name, last_name, email, address, type, imguser;
+    private String user_id, name, last_name, email, address, type, imguser, macdevice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.register_activity);
+        setContentView(R.layout.device_activity);
 
         init();
         sessionuser();
@@ -55,43 +62,99 @@ public class RegisterdeviceActivity extends AppCompatActivity {
         btnsingup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(user_id != null && email != null){
-                    if(!macdevice.getText().toString().equals("") && !namedivice.getText().toString().equals("")){
-                        proDialog = new ProgressDialog(getApplicationContext());
-                        proDialog.setTitle("Registration");
-                        proDialog.setMessage("Processing registration please wait...");
-                        proDialog.show();
+                    if(!macdevice.equals("") && !namedivice.getText().toString().equals("")){
+
                         String registerjson = "{\n" +
                                 "   \"firstnameregister\":\""+bundle.getString("firstnameregister")+"\",\n" +
-                                "   \"lastnameregister\":\""+bundle.getString("lastnameregister")+"\"\n" +
-                                "   \"emailregister\":\""+bundle.getString("emailregister")+"\"\n" +
-                                "   \"passwordregister\":\""+bundle.getString("passwordregister")+"\"\n" +
-                                "   \"addressregister\":\""+bundle.getString("addressregister")+"\"\n" +
-                                "   \"type\":\""+"Administrador"+"\"\n" +
-                                "   \"imguser\":\""+"https://elclosetlgbt.com/wp-content/uploads/2020/01/WhatsApp-Image-2020-01-13-at-15.42.30.jpeg"+"\"\n" +
-                                "   \"namedevice\":\""+namedivice.getText().toString()+"\"\n" +
-                                "   \"macdevice\":\""+macdevice.getText().toString()+"\"\n" +
+                                "   \"lastnameregister\":\""+bundle.getString("lastnameregister")+"\",\n" +
+                                "   \"emailregister\":\""+bundle.getString("emailregister")+"\",\n" +
+                                "   \"passwordregister\":\""+bundle.getString("passwordregister")+"\",\n" +
+                                "   \"addressregister\":\""+bundle.getString("addressregister")+"\",\n" +
+                                "   \"type\":\""+"Administrador"+"\",\n" +
+                                "   \"imguser\":\""+"https://elclosetlgbt.com/wp-content/uploads/2020/01/WhatsApp-Image-2020-01-13-at-15.42.30.jpeg"+"\",\n" +
+                                "   \"namedevice\":\""+namedivice.getText().toString()+"\",\n" +
+                                "   \"macdevice\":\""+macdevice+"\"\n" +
 
                                 "}";
                         Log.d("JSONUSER",registerjson);
+                         registrationuservolley(registerjson);
+                        //   url();
                       //  registrationuservolley(registerjson);
                        // registrationuser();
                     }
-                }else{
-                    Toast.makeText(RegisterdeviceActivity.this, "No session", Toast.LENGTH_LONG).show();
-                    gologin();
-                }
+            }
+        });
+    }
+    private void init(){
+        namedivice =  (EditText) findViewById(R.id.namedivice);
+        btnsingup =  (Button) findViewById(R.id.btnsingup);
+        macdevice = getmacdevice();
+        preferences = getSharedPreferences("Preferences", MODE_PRIVATE);
+        bundle = this.getIntent().getExtras();
+    }
+
+    public void url() {
+
+        String urls = "http://192.168.1.3:8080/bsmarthome/webresources/users/userregistration";
+        RequestQueue requestQueue2 = Volley.newRequestQueue(this);
+
+        JSONObject postData = new JSONObject();
+        try {
+            postData.put("firstnameregister", bundle.getString("firstnameregister"));
+            postData.put("lastnameregister", bundle.getString("lastnameregister"));
+            postData.put("emailregister",bundle.getString("emailregister"));
+            postData.put("passwordregister",bundle.getString("passwordregister"));
+            postData.put("addressregister","Administrador");
+            postData.put("imguser","https://elclosetlgbt.com/wp-content/uploads/2020/01/WhatsApp-Image-2020-01-13-at-15.42.30.jpeg");
+            postData.put("namedevice",namedivice.getText().toString());
+            postData.put("macdevice",macdevice);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, urls, postData, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("response",response.toString());
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
             }
         });
 
-
+        requestQueue2.add(jsonObjectRequest);
     }
-    private void init(){
-        macdevice =  (EditText) findViewById(R.id.macdevice);
-        namedivice =  (EditText) findViewById(R.id.namedivice);
-        btnsingup =  (Button) findViewById(R.id.btnsingup);
-        preferences = getSharedPreferences("Preferences", MODE_PRIVATE);
-        bundle = this.getIntent().getExtras();
+
+    private String getmacdevice(){
+        String stringMac = "";
+        try {
+            List<NetworkInterface> networkInterfaceslist = Collections.list(NetworkInterface.getNetworkInterfaces());
+
+            for(NetworkInterface networkInterface:networkInterfaceslist){
+                if(networkInterface.getName().equalsIgnoreCase("wlan0")){
+                    for (int i=0; i<networkInterface.getHardwareAddress().length;i++){
+
+                        String stringMacByte = Integer.toHexString(networkInterface.getHardwareAddress()[i] & 0xFF);
+
+                        if(stringMacByte.length() == 1){
+                            stringMacByte = "0" + stringMac;
+                        }
+
+                        stringMac = stringMac + stringMacByte.toUpperCase()+":";
+                    }
+                    break;
+                }
+            }
+            return stringMac.substring(0,stringMac.length()-1);
+
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        return stringMac.substring(0,stringMac.length()-1);
     }
 
     private void gologin() {
@@ -118,7 +181,7 @@ public class RegisterdeviceActivity extends AppCompatActivity {
         //Obtención de datos del web service utilzando Volley
         requestQueue = Volley.newRequestQueue(this);
         StringRequest request = new StringRequest(
-                Request.Method.POST,URL+"webresources/users/userregistration",
+                Request.Method.POST,"http://192.168.1.3:8080/bsmarthome/webresources/users/userregistration",
                 new com.android.volley.Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -155,26 +218,6 @@ public class RegisterdeviceActivity extends AppCompatActivity {
             }
         };
         requestQueue.add(request);
-    }
-
-    private void registrationuser(){
-        RegistrationModel registrationModel = new RegistrationModel(bundle.getString("firstnameregister"),
-                bundle.getString("lastnameregister"),bundle.getString("emailregister"),
-                bundle.getString("passwordregister"),bundle.getString("addressregister"),
-                "Administrador","https://elclosetlgbt.com/wp-content/uploads/2020/01/WhatsApp-Image-2020-01-13-at-15.42.30.jpeg",
-                namedivice.getText().toString(),macdevice.getText().toString());
-        Call<RegistrationModel> call = RetrofitClient.getInstance().getApi().PostDataRegistrationuser(registrationModel);
-        call.enqueue(new Callback<RegistrationModel>() {
-            @Override
-            public void onResponse(Call<RegistrationModel> call, Response<RegistrationModel> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<RegistrationModel> call, Throwable t) {
-
-            }
-        });
     }
 
 }

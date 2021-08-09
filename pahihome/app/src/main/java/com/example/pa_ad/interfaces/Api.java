@@ -1,5 +1,6 @@
 package com.example.pa_ad.interfaces;
 
+import com.example.pa_ad.models.DataModel;
 import com.example.pa_ad.models.FetchUserResponse;
 import com.example.pa_ad.models.ReconocimientoModel;
 import com.example.pa_ad.models.RegistrationModel;
@@ -19,6 +20,9 @@ public interface Api {
     @GET("users")
     public Call<List<UserModel>> fetchusers();
  //   public Call<FetchUserResponse> fetchusers();
+
+    @GET("data")
+    public Call<List<DataModel>> fetchdatamodel();
 
     @POST("reconocimiento")
     Call<ReconocimientoModel> PostDataReconocimiento(@Body ReconocimientoModel reconocimientoModel);

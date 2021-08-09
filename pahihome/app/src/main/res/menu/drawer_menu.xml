@@ -12,9 +12,9 @@
         android:title="@string/notificacions"/>
 
     <item
-        android:id="@+id/menuFire"
+        android:id="@+id/menurealtimecontrol"
         android:icon="@drawable/fire"
-        android:title="@string/fire"/>
+        android:title="@string/realtimecontrol"/>
 
     <item
         android:id="@+id/logOff"

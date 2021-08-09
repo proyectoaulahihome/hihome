@@ -55,3 +55,44 @@ ALTER FUNCTION public.insertdata(xml)
 
 ----------------DELETE----------------
 ----------------UPDATE----------------
+
+----------------------USER------------------------------
+----------------INSERT----------------
+
+CREATE OR REPLACE FUNCTION public.insertuser(
+	message_xml xml)
+    RETURNS text
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE 
+AS $BODY$
+
+  DECLARE root_xpath TEXT = '/data/';
+  resul integer = 0;
+  BEGIN
+    INSERT INTO public.tbluser(name,last_name,email,password,address,type,imguser)values
+			((xpath(root_xpath|| 'name/text()', message_xml))[1],
+			 (xpath(root_xpath|| 'last_name/text()', message_xml))[1],
+			 (xpath(root_xpath|| 'email/text()', message_xml))[1],
+			(xpath(root_xpath|| 'password/text()', message_xml))[1],
+			(xpath(root_xpath|| 'address/text()', message_xml))[1],
+			(xpath(root_xpath|| 'type/text()', message_xml))[1],
+			(xpath(root_xpath|| 'imguser/text()', message_xml))[1]);
+			
+	INSERT INTO public.tbldevice(user_id, namedevice, mac)values
+	((select max(user_id) from public.tbldevice),
+	(xpath(root_xpath|| 'namedevice/text()', message_xml))[1],
+	(xpath(root_xpath|| 'mac/text()', message_xml))[1]);
+	return resul;																			 
+  END;
+$BODY$;
+
+ALTER FUNCTION public.insertuser(xml)
+    OWNER TO pdckzidnkeycgc;
+
+----------------DELETE----------------
+----------------UPDATE----------------
+
+----------------DELETE----------------
+----------------UPDATE----------------

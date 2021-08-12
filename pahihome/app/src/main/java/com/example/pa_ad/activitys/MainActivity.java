@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -39,7 +40,13 @@ private String user_id, name, last_name, email, address, type, imguser;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         init();
-        validatesesion();
+        if(validatesesion()){
+            Toast.makeText(MainActivity.this, "Active session", Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(MainActivity.this, "Session not active", Toast.LENGTH_LONG).show();
+        }
+
+
         btnLogin.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -133,10 +140,15 @@ private String user_id, name, last_name, email, address, type, imguser;
         edittexpassword =  (EditText)findViewById(R.id.edittexpassword);
         preferences = getSharedPreferences("Preferences", MODE_PRIVATE);
     }
-    private void validatesesion(){
+    private boolean validatesesion(){
         sessionuser();
         if (user_id != null && email != null) {
+            Log.d("iduser", user_id);
+            Log.d("email", email);
             goMenu();
+            return true;
+        }else{
+            return false;
         }
     }
 

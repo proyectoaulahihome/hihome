@@ -41,6 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,6 +166,7 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onResponse(String response) {
                         int size = response.length();
+                        response = fixEncoding(response);
                         if (size > 0){
                             try {
                                 JSONArray Ja = new JSONArray(response);
@@ -202,6 +204,18 @@ public class HomeFragment extends Fragment {
                 }
         );
         requestQueue.add(request);
+    }
+
+    public static String fixEncoding(String response) {
+        try {
+            byte[] u = response.toString().getBytes(
+                    "ISO-8859-1");
+            response = new String(u, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return response;
     }
 
     @Override

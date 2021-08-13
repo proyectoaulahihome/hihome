@@ -23,6 +23,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,6 +80,7 @@ private String user_id, name, last_name, email, address, type, imguser;
                     @Override
                     public void onResponse(String response) {
                         int size = response.length();
+                        response = fixEncoding(response);
                         JSONObject json_transform = null;
                         try {
                             if (size > 0)
@@ -94,9 +97,7 @@ private String user_id, name, last_name, email, address, type, imguser;
                                     editor.putString("type",json_transform.getJSONObject("data").getString("type"));
                                     editor.putString("imguser",json_transform.getJSONObject("data").getString("imguser"));
                                     editor.commit();
-                                    Intent intent = new Intent(MainActivity.this, processActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
+                                    goMenu();
                                 }
                                 else{
                                     Log.d("Data","Credenciales Incorrectas");
@@ -117,8 +118,11 @@ private String user_id, name, last_name, email, address, type, imguser;
                 }
         ) {
             @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json; charset=utf-8");
+                params.put("Accept", "application/json");
+                return params;
             }
             @Override
             public byte[] getBody() throws AuthFailureError {
@@ -131,6 +135,18 @@ private String user_id, name, last_name, email, address, type, imguser;
             }
         };
         requestQueue.add(request);
+    }
+
+    public static String fixEncoding(String response) {
+        try {
+            byte[] u = response.toString().getBytes(
+                    "ISO-8859-1");
+            response = new String(u, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return response;
     }
 
     private void init(){
@@ -161,6 +177,7 @@ private String user_id, name, last_name, email, address, type, imguser;
         type= preferences.getString("type",null);
         imguser= preferences.getString("imguser",null);
     }
+
     private void goMenu(){
         Intent i = new Intent(this, processActivity.class);
         // bandera para que no se creen nuevas actividades innecesarias

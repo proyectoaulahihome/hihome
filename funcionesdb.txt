@@ -41,11 +41,12 @@ AS $BODY$
   DECLARE root_xpath TEXT = '/data/';
   resul integer = 0;
   BEGIN
-    INSERT INTO public.tbldata(device_id,mqgas,mlx,mqhumo)values
+    INSERT INTO public.tbldata(device_id,mqgas,mlx,mqhumo,u_detected)values
 			((xpath(root_xpath|| 'device_id/text()', message_xml))[1]::text::integer,
 			 (xpath(root_xpath|| 'mqgas/text()', message_xml))[1]::text::numeric,
 			 (xpath(root_xpath|| 'mlx/text()', message_xml))[1]::text::numeric,
-			(xpath(root_xpath|| 'mqhumo/text()', message_xml))[1]::text::numeric);
+			(xpath(root_xpath|| 'mqhumo/text()', message_xml))[1]::text::numeric,
+			(xpath(root_xpath|| 'u_detected/text()', message_xml))[1]);
 	return resul;																			 
   END;
 $BODY$;
@@ -68,7 +69,7 @@ CREATE OR REPLACE FUNCTION public.insertuser(
     VOLATILE 
 AS $BODY$
 
-  DECLARE root_xpath TEXT = '/data/';
+  DECLARE root_xpath TEXT = '/user/';
   resul integer = 0;
   BEGIN
     INSERT INTO public.tbluser(name,last_name,email,password,address,type,imguser)values

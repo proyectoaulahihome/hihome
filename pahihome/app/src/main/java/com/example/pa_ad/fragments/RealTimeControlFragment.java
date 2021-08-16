@@ -32,6 +32,7 @@ import com.example.pa_ad.models.DataModel;
 import com.example.pa_ad.models.NotificationsModel;
 import com.example.pa_ad.models.ReconocimientoModel;
 import com.example.pa_ad.models.UserModel;
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.PieData;
@@ -43,6 +44,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +74,6 @@ public class RealTimeControlFragment extends Fragment {
         piechart = (PieChart)view.findViewById(R.id.Pastelchart);
         txtmqgas =  (TextView) view.findViewById(R.id.txtmqgas);
         txtmlx =  (TextView) view.findViewById(R.id.txtmlx);
-        txtmqhumo =  (TextView) view.findViewById(R.id.txtmqhumo);
         init();
         sessionuser();
         exec();
@@ -91,7 +92,7 @@ public class RealTimeControlFragment extends Fragment {
             @Override
             public void run() {
                 grafi();
-                handler.postDelayed(this,1000);//se ejecutara cada 1 segundos
+                handler.postDelayed(this,5000);//se ejecutara cada 1 segundos
             }
         };
         handler.postDelayed(mTicker,5000);//se ejecutara cada 5 segundos
@@ -116,7 +117,7 @@ public class RealTimeControlFragment extends Fragment {
             //descrio.setText("Actividad");
             piechart.setDescription(descrio);
 
-            requestQueue = Volley.newRequestQueue(getActivity());
+            //  requestQueue = Volley.newRequestQueue(getActivity());
             StringRequest request = new StringRequest(
                     Request.Method.GET,
                     URL +"data",
@@ -124,6 +125,7 @@ public class RealTimeControlFragment extends Fragment {
                         @Override
                         public void onResponse(String response) {
                             int size = response.length();
+                            response = fixEncoding(response);
                             try {
                                 ArrayList<PieEntry> pieEntries=new ArrayList<>();
                                 JSONObject json_transform = null;
@@ -136,14 +138,16 @@ public class RealTimeControlFragment extends Fragment {
                                 //    Log.d("mqgas",String.valueOf(json_transform.getInt("mqgas")));
                                     txtmqgas.setText(json_transform.getString("mqgas"));
                                     txtmlx.setText(json_transform.getString("mlx"));
-                                    txtmqhumo.setText(json_transform.getString("mqhumo"));
+                                 //   txtmqhumo.setText(json_transform.getString("mqhumo"));
                                     pieEntries.add(new PieEntry( 1, json_transform.getString("mqgas")));
                                     pieEntries.add(new PieEntry( 2, json_transform.getString("mlx")));
-                                    pieEntries.add(new PieEntry( 3, json_transform.getString("mqhumo")));
+                                 //   pieEntries.add(new PieEntry( 3, json_transform.getString("mqhumo")));
                                 }
-                               PieDataSet pieDataSet=new PieDataSet(pieEntries, "MQGAS" +"-"+ "MLX" +"-"+ "MQHUMO");
+                                piechart.animateX(2500, Easing.EasingOption.EaseOutCirc);
+                                PieDataSet pieDataSet=new PieDataSet(pieEntries, "MQGAS" +"-"+ "MLX");
                                 pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
                                 PieData pieData=new PieData(pieDataSet);
+
                                 piechart.setData(pieData);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -165,7 +169,12 @@ public class RealTimeControlFragment extends Fragment {
                     return params;
                 }
             };
-            requestQueue.add(request);
+            if (requestQueue == null) {
+                requestQueue = Volley.newRequestQueue(getActivity());
+                requestQueue.add(request);
+            } else {
+                requestQueue.add(request);
+            }
 
         }else{
             Toast.makeText(getActivity(), "No session", Toast.LENGTH_LONG).show();
@@ -198,10 +207,19 @@ public class RealTimeControlFragment extends Fragment {
                 Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }
-
-
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+    }
+    public static String fixEncoding(String response) {
+        try {
+            byte[] u = response.toString().getBytes(
+                    "ISO-8859-1");
+            response = new String(u, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return response;
     }
 }

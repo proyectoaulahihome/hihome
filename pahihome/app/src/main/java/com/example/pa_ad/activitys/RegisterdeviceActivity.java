@@ -33,7 +33,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -63,7 +65,10 @@ public class RegisterdeviceActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                     if(!macdevice.equals("") && !namedivice.getText().toString().equals("")){
-
+                        proDialog = new ProgressDialog(RegisterdeviceActivity.this);
+                        proDialog.setTitle("Data");
+                        proDialog.setMessage("Loading data please wait...");
+                        proDialog.show();
                         String registerjson = "{\n" +
                                 "   \"firstnameregister\":\""+bundle.getString("firstnameregister")+"\",\n" +
                                 "   \"lastnameregister\":\""+bundle.getString("lastnameregister")+"\",\n" +
@@ -71,7 +76,7 @@ public class RegisterdeviceActivity extends AppCompatActivity {
                                 "   \"passwordregister\":\""+bundle.getString("passwordregister")+"\",\n" +
                                 "   \"addressregister\":\""+bundle.getString("addressregister")+"\",\n" +
                                 "   \"type\":\""+"Administrador"+"\",\n" +
-                                "   \"imguser\":\""+"https://elclosetlgbt.com/wp-content/uploads/2020/01/WhatsApp-Image-2020-01-13-at-15.42.30.jpeg"+"\",\n" +
+                                "   \"imguser\":\""+"https://img.icons8.com/ios/452/user--v1.png"+"\",\n" +
                                 "   \"namedevice\":\""+namedivice.getText().toString()+"\",\n" +
                                 "   \"macdevice\":\""+macdevice+"\"\n" +
 
@@ -105,7 +110,7 @@ public class RegisterdeviceActivity extends AppCompatActivity {
             postData.put("emailregister",bundle.getString("emailregister"));
             postData.put("passwordregister",bundle.getString("passwordregister"));
             postData.put("addressregister","Administrador");
-            postData.put("imguser","https://elclosetlgbt.com/wp-content/uploads/2020/01/WhatsApp-Image-2020-01-13-at-15.42.30.jpeg");
+            postData.put("imguser","https://img.icons8.com/ios/452/user--v1.png");
             postData.put("namedevice",namedivice.getText().toString());
             postData.put("macdevice",macdevice);
 
@@ -181,14 +186,23 @@ public class RegisterdeviceActivity extends AppCompatActivity {
         //Obtención de datos del web service utilzando Volley
         requestQueue = Volley.newRequestQueue(this);
         StringRequest request = new StringRequest(
-                Request.Method.POST,"http://192.168.1.3:8080/bsmarthome/webresources/users/userregistration",
+                Request.Method.POST,URL+"webresources/users/userregistration",
                 new com.android.volley.Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        proDialog.dismiss();
                         int size = response.length();
+                        response = fixEncoding(response);
                         JSONObject json_transform = null;
                         try {
                             json_transform = new JSONObject(response);
+                            if(json_transform.getString("status").equals("true")){
+                                Toast.makeText(RegisterdeviceActivity.this,"Usuario registrado con éxito", Toast.LENGTH_LONG).show();
+                                gologin();
+                            }else{
+                                Toast.makeText(RegisterdeviceActivity.this,"Usuario no registrado", Toast.LENGTH_LONG).show();
+                                gologin();
+                            }
                             Log.d("response",response);
 
                         } catch (JSONException e) {
@@ -199,13 +213,17 @@ public class RegisterdeviceActivity extends AppCompatActivity {
                 new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("Error.Response", String.valueOf(error));
+                        proDialog.dismiss();
+                        Toast.makeText(RegisterdeviceActivity.this, String.valueOf(error), Toast.LENGTH_LONG).show();
                     }
                 }
         ) {
             @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json; charset=utf-8");
+                params.put("Accept", "application/json");
+                return params;
             }
             @Override
             public byte[] getBody() throws AuthFailureError {
@@ -218,6 +236,18 @@ public class RegisterdeviceActivity extends AppCompatActivity {
             }
         };
         requestQueue.add(request);
+    }
+
+    public static String fixEncoding(String response) {
+        try {
+            byte[] u = response.toString().getBytes(
+                    "ISO-8859-1");
+            response = new String(u, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return response;
     }
 
 }

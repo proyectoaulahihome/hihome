@@ -25,7 +25,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
-                android:text="0.0"
+                android:text="0"
+                android:layout_marginLeft="20dp"
+                android:paddingRight="50dp"
                 android:textColor="@color/black"
                 android:textSize="40dp" />
 
@@ -39,22 +41,10 @@
                 android:id="@+id/txtmlx"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0.0"
+                android:text="0"
+                android:layout_marginLeft="20dp"
+                android:paddingRight="50dp"
                 android:layout_marginRight="20dp"
-                android:textColor="@color/black"
-                android:textSize="40dp" />
-
-            <TextView
-                android:id="@+id/textView13"
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
-                android:background="#F5C700" />
-
-            <TextView
-                android:id="@+id/txtmqhumo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0.0"
                 android:textColor="@color/black"
                 android:textSize="40dp" />
 

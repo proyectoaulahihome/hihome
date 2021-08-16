@@ -3,18 +3,19 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    
+
     <TextView
         android:id="@+id/home_detail_viewtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
         android:text="Detail Person"
-        android:textStyle="bold"
         android:textSize="30sp"
-        android:layout_marginTop="60dp"
-        android:gravity="center">
+        android:textStyle="bold">
 
     </TextView>
+
     <ImageView
         android:id="@+id/home_detail_img"
         android:layout_width="200dp"
@@ -41,5 +42,58 @@
         android:textSize="30sp"
         android:gravity="center">
     </TextView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="200dp"
+        android:orientation="horizontal"
+        android:paddingLeft="70dp"
+        android:paddingTop="20dp">
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:background="#d32f2f" />
+
+        <TextView
+            android:id="@+id/txtmqgasuser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:paddingRight="50dp"
+            android:text="0"
+            android:textColor="@color/black"
+            android:textSize="25dp" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:background="#ff5722" />
+
+        <TextView
+            android:id="@+id/txtmlxuser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:paddingRight="50dp"
+            android:text="0"
+            android:textColor="@color/black"
+            android:textSize="25dp" />
+
+    </LinearLayout>
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barchartuser"
+        android:layout_width="300dp"
+        android:layout_height="250dp"
+        android:layout_marginLeft="55dp"
+        android:layout_marginTop="-180dp"
+        android:paddingTop="30dp">
+
+    </com.github.mikephil.charting.charts.BarChart>
 
 </LinearLayout>

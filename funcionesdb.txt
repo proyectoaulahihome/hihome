@@ -59,17 +59,16 @@ ALTER FUNCTION public.insertdata(xml)
 
 ----------------------USER------------------------------
 ----------------INSERT----------------
+-- DROP FUNCTION public.insertuser(xml);
 
 CREATE OR REPLACE FUNCTION public.insertuser(
 	message_xml xml)
     RETURNS text
     LANGUAGE 'plpgsql'
-
     COST 100
-    VOLATILE 
+    VOLATILE PARALLEL UNSAFE
 AS $BODY$
-
-  DECLARE root_xpath TEXT = '/user/';
+DECLARE root_xpath TEXT = '/userdevice/';
   resul integer = 0;
   BEGIN
     INSERT INTO public.tbluser(name,last_name,email,password,address,type,imguser)values

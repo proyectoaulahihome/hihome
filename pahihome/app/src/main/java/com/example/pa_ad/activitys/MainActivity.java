@@ -100,10 +100,9 @@ private String user_id, name, last_name, email, address, type, imguser;
                                     goMenu();
                                 }
                                 else{
-                                    Log.d("Data","Credenciales Incorrectas");
+                                    Toast.makeText(MainActivity.this, "Incorrect credentials", Toast.LENGTH_LONG).show();
                                     Log.d("response",response);
                                 }
-
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

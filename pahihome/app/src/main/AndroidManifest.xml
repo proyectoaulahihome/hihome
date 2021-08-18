@@ -20,7 +20,7 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
 
-        <activity android:name=".activitys.processActivity"></activity>
+
         <activity android:name=".activitys.RegisterActivity"></activity>
         <activity android:name=".activitys.RegisterdeviceActivity"></activity>
         <activity android:name=".activitys.MainActivity">
@@ -29,6 +29,14 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity android:name=".activitys.processActivity"
+            android:parentActivityName=".activitys.processActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activitys.processActivity"
+                />
         </activity>
     </application>
 

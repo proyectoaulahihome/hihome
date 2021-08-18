@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,11 +20,21 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.pa_ad.R;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +49,8 @@ private Button btnLogin, btnRegister;
 private SharedPreferences preferences;
 private String user_id, name, last_name, email, address, type, imguser;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +61,7 @@ private String user_id, name, last_name, email, address, type, imguser;
         }else{
             Toast.makeText(MainActivity.this, "Session not active", Toast.LENGTH_LONG).show();
         }
+
 
 
         btnLogin.setOnClickListener(new View.OnClickListener(){
@@ -73,7 +88,7 @@ private String user_id, name, last_name, email, address, type, imguser;
     private void Sesion(String datajson){
 
         //Obtención de datos del web service utilzando Volley
-        requestQueue = Volley.newRequestQueue(this);
+        // requestQueue = Volley.newRequestQueue(this);
         StringRequest request = new StringRequest(
                 Request.Method.POST,URL+"webresources/users/logIn",
                 new com.android.volley.Response.Listener<String>() {
@@ -133,7 +148,12 @@ private String user_id, name, last_name, email, address, type, imguser;
                 }
             }
         };
-        requestQueue.add(request);
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+            requestQueue.add(request);
+        } else {
+            requestQueue.add(request);
+        }
     }
 
     public static String fixEncoding(String response) {

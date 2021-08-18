@@ -90,6 +90,11 @@ public class HomeFragment extends Fragment {
 
         preferences = this.getActivity().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
     }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        onDestroy ();
+    }
 
     public void sessionuser(){
         user_id = preferences.getString("user_id",null);

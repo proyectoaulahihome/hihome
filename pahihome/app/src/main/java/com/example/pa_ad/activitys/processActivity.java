@@ -322,7 +322,8 @@ public class processActivity extends AppCompatActivity implements NavigationView
                                 //Log.e("mlx",String.valueOf(json_transform.getInt("mlx")));
                                 if ((json_transform.getInt("mlx") >= 36)) {
                                     Log.e("ALERTA DE MLX", json_transform.getString("mlx"));
-                                    sendMyNotification("Notification Android","Temperatura corporal alta", json_transform.getString("data_id"));
+                                    sendMyNotification("Notification por temperatura corporal alta","La temperatura corporal es de: " + json_transform.getString("mlx")
+                                            , json_transform.getString("data_id"));
                                     createNotificationChannel();
                                 }
                                 if ((json_transform.getInt("mqgas") >= 39)) {

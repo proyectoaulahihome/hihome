@@ -96,3 +96,35 @@ ALTER FUNCTION public.insertuser(xml)
 
 ----------------DELETE----------------
 ----------------UPDATE----------------
+
+----------------------NOTIFICATION------------------------------
+----------------INSERT----------------
+CREATE OR REPLACE FUNCTION public.insertnotification(
+	message_xml xml)
+    RETURNS text
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE root_xpath TEXT = '/notification/';
+  resul integer = 0;
+  BEGIN
+    INSERT INTO public.tblnotifications(data_id,title,message,date_notification)values
+			((xpath(root_xpath|| 'data_id/text()', message_xml))[1]::text::integer,
+			 (xpath(root_xpath|| 'title/text()', message_xml))[1],
+			 (xpath(root_xpath|| 'message/text()', message_xml))[1],
+			  NOW());
+	return resul;																			 
+  END;
+$BODY$;
+
+ALTER FUNCTION public.insertnotification(xml)
+    OWNER TO pdckzidnkeycgc;
+
+
+
+----------------DELETE----------------
+----------------UPDATE----------------
+
+----------------DELETE----------------
+----------------UPDATE----------------

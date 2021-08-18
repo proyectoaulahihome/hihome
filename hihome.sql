@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      PostgreSQL 8                                 */
-/* Created on:     15/8/2021 18:39:05                           */
+/* Created on:     18/8/2021 0:36:52                            */
 /*==============================================================*/
 
 
@@ -16,7 +16,7 @@ drop index TBLDEVICE_PK;
 
 drop table TBLDEVICE;
 
-drop index RELATIONSHIP_3_FK;
+drop index RTBLDATA_TBLNOTI_FK;
 
 drop index TBLNOTIFICATIONS_PK;
 
@@ -36,15 +36,15 @@ create table TBLDATA (
    MLX                  INT4                 not null,
    MQHUMO               INT4                 not null,
    U_DETECTED           VARCHAR(50)          not null,
-   constraint PK_TBLDATA primary key (DATA_ID, U_DETECTED)
+   DATEUP               DATE                 not null,
+   constraint PK_TBLDATA primary key (DATA_ID)
 );
 
 /*==============================================================*/
 /* Index: TBLDATA_PK                                            */
 /*==============================================================*/
 create unique index TBLDATA_PK on TBLDATA (
-DATA_ID,
-U_DETECTED
+DATA_ID
 );
 
 /*==============================================================*/
@@ -84,7 +84,8 @@ USER_ID
 /*==============================================================*/
 create table TBLNOTIFICATIONS (
    NOTIFICATION_ID      SERIAL               not null,
-   DEVICE_ID            INT4                 not null,
+   DATA_ID              INT4                 not null,
+   TITLE                VARCHAR(50)          not null,
    MESSAGE              VARCHAR(100)         not null,
    DATE_NOTIFICATION    DATE                 not null,
    constraint PK_TBLNOTIFICATIONS primary key (NOTIFICATION_ID, MESSAGE)
@@ -99,10 +100,10 @@ MESSAGE
 );
 
 /*==============================================================*/
-/* Index: RELATIONSHIP_3_FK                                     */
+/* Index: RTBLDATA_TBLNOTI_FK                                   */
 /*==============================================================*/
-create  index RELATIONSHIP_3_FK on TBLNOTIFICATIONS (
-DEVICE_ID
+create  index RTBLDATA_TBLNOTI_FK on TBLNOTIFICATIONS (
+DATA_ID
 );
 
 /*==============================================================*/
@@ -141,7 +142,7 @@ alter table TBLDEVICE
       on delete restrict on update restrict;
 
 alter table TBLNOTIFICATIONS
-   add constraint FK_TBLNOTIF_RTBLDEVIC_TBLDEVIC foreign key (DEVICE_ID)
-      references TBLDEVICE (DEVICE_ID)
+   add constraint FK_TBLNOTIF_RTBLDATA__TBLDATA foreign key (DATA_ID)
+      references TBLDATA (DATA_ID)
       on delete restrict on update restrict;
 

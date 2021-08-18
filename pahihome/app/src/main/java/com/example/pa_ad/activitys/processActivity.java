@@ -142,12 +142,6 @@ public class processActivity extends AppCompatActivity implements NavigationView
                 fragmentTransaction.commit();
             }
 
-
-
-
-
-            //Log.e("notificacionXLW", notificationac);
-
         } else {
             Toast.makeText(processActivity.this, "No session", Toast.LENGTH_LONG).show();
             gologin();
@@ -307,8 +301,6 @@ public class processActivity extends AppCompatActivity implements NavigationView
     }
 
     private void notifi() {
-        // requestQueue = Volley.newRequestQueue(getActivity());
-
         StringRequest request = new StringRequest(
                 Request.Method.GET,
                 URL + "/data/shearchforuser",
@@ -330,11 +322,8 @@ public class processActivity extends AppCompatActivity implements NavigationView
                                 //Log.e("mlx",String.valueOf(json_transform.getInt("mlx")));
                                 if ((json_transform.getInt("mlx") >= 36)) {
                                     Log.e("ALERTA DE MLX", json_transform.getString("mlx"));
-                                    sendMyNotification("Notification Android","Temperatura corporal alta");
-                                    //setPendingIntent();
+                                    sendMyNotification("Notification Android","Temperatura corporal alta", json_transform.getString("data_id"));
                                     createNotificationChannel();
-                                  /*  createNotificationTempCorporal(); */
-
                                 }
                                 if ((json_transform.getInt("mqgas") >= 39)) {
                                     Log.e("ALERTA DE MQGAS", json_transform.getString("mqgas"));
@@ -368,6 +357,63 @@ public class processActivity extends AppCompatActivity implements NavigationView
         }
         // requestQueue.add(request);
     }
+
+    private void insertnotification(String datajson) {
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                URL + "/notification/insertnotification",
+                new com.android.volley.Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        int size = response.length();
+                        boolean band = false;
+                        response = fixEncoding(response);
+                        //  Log.d("Respuesta", response);
+                        try {
+                            JSONObject json_transform = null;
+                            JSONArray jsonarray = new JSONArray(response);
+                            for (int i = 0; i < jsonarray.length(); i++) {
+                                json_transform = jsonarray.getJSONObject(i);
+                                Toast.makeText(processActivity.this, json_transform.getString("information"), Toast.LENGTH_LONG).show();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json; charset=utf-8");
+                params.put("Accept", "application/json");
+                return params;
+            }
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return datajson == null ? "{}".getBytes("utf-8") : datajson.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+
+                    return null;
+                }
+            }
+        };
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+            requestQueue.add(request);
+        } else {
+            requestQueue.add(request);
+        }
+    }
+
+
 
     private void setPendingIntent(){
         Intent intent = new Intent(this, processActivity.class);
@@ -406,7 +452,7 @@ public class processActivity extends AppCompatActivity implements NavigationView
     }
 
 
-    private void sendMyNotification(String title,String message) {
+    private void sendMyNotification(String title,String message, String data_id) {
 
         //On click of notification it redirect to this Activity
         Intent intent = new Intent(this, processActivity.class);
@@ -418,7 +464,13 @@ public class processActivity extends AppCompatActivity implements NavigationView
         b.putString("notification", String.valueOf(bandnotify));
         intent.putExtras(b); */
         pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-
+        String notificationjson = "{\n" +
+                "   \"data_id\":\""+data_id+"\",\n" +
+                "   \"title\":\""+title+"\",\n" +
+                "   \"message\":\""+message+"\"\n" +
+                "}";
+        Log.d("JSONNOTIFICATION",notificationjson);
+        insertnotification(notificationjson);
          Uri soundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Bitmap icon = BitmapFactory.decodeResource(getResources(),
                 R.mipmap.logopa);

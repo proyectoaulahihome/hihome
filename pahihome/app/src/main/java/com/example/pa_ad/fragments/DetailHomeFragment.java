@@ -75,12 +75,16 @@ import retrofit2.Response;
 
 public class DetailHomeFragment extends Fragment {
     private TextView home_detail_name, txtmqgasuser, txtmlxuser, txtmqhumouser;
+
     private ImageView home_detail_img;
     private String URL = "https://bsmarthome.herokuapp.com/webresources/";
     private RequestQueue requestQueue;
     BarChart barchart;
     private Handler handler;
     private Runnable mTicker;
+
+    String []labels=new String[] {"MQGAS","MLX"};
+    int []airqdata=new int[]{108,21,71,70};
 
     // variables para mantener sesion
     private SharedPreferences preferences;
@@ -91,7 +95,7 @@ public class DetailHomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
     View view =inflater.inflate(R.layout.home_detail_fragment, container, false);
-        barchart = (BarChart)view.findViewById(R.id.barchartuser);
+    barchart = (BarChart)view.findViewById(R.id.barchartuser);
     return view;
 
     }

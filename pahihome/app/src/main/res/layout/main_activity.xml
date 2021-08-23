@@ -85,31 +85,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@mipmap/logopa" />
-
-    <ImageButton
-        android:id="@+id/imgbFacebook"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/button_social"
-        android:scaleType="center"
-        app:layout_constraintEnd_toStartOf="@+id/imgbGoogle"
-        app:layout_constraintHorizontal_bias="0.722"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnRegister"
-        app:srcCompat="@drawable/facebook" />
-
-    <ImageButton
-        android:id="@+id/imgbGoogle"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="136dp"
-        android:background="@drawable/button_social"
-        android:scaleType="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnRegister"
-        app:srcCompat="@drawable/google" />
-
+    
 </androidx.constraintlayout.widget.ConstraintLayout>

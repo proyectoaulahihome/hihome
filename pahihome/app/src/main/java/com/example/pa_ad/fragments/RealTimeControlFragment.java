@@ -139,8 +139,10 @@ public class RealTimeControlFragment extends Fragment {
                                     txtmqgas.setText(json_transform.getString("mqgas"));
                                     txtmlx.setText(json_transform.getString("mlx"));
                                  //   txtmqhumo.setText(json_transform.getString("mqhumo"));
-                                    pieEntries.add(new PieEntry( 1, json_transform.getString("mqgas")));
-                                    pieEntries.add(new PieEntry( 2, json_transform.getString("mlx")));
+                                /*    pieEntries.add(new PieEntry( 1, json_transform.getString("mqgas")));
+                                    pieEntries.add(new PieEntry( 2, json_transform.getString("mlx"))); */
+                                    pieEntries.add(new PieEntry( json_transform.getInt("mqgas"), "mqgas"));
+                                    pieEntries.add(new PieEntry( json_transform.getInt("mlx"), "mlx"));
                                  //   pieEntries.add(new PieEntry( 3, json_transform.getString("mqhumo")));
                                 }
                                 piechart.animateX(2500, Easing.EasingOption.EaseOutCirc);

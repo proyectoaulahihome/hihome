@@ -185,8 +185,6 @@ public class processActivity extends AppCompatActivity implements NavigationView
         Toast.makeText(processActivity.this, "Closed session", Toast.LENGTH_LONG).show();
     }
 
-
-
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -326,7 +324,7 @@ public class processActivity extends AppCompatActivity implements NavigationView
                                             , json_transform.getString("data_id"));
                                     createNotificationChannel();
                                 }
-                                if ((json_transform.getInt("mqgas") >= 39)) {
+                                if ((json_transform.getInt("mqgas") >= 200)) {
                                     Log.e("ALERTA DE MQGAS", json_transform.getString("mqgas"));
                                 }
                             }

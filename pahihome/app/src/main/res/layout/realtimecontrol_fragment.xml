@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
-
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvinfopastelchart"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="200dp"
-            android:orientation="horizontal"
-            android:paddingTop="50dp">
+            android:layout_width="match_parent"
+            android:layout_height="71dp">
 
             <TextView
                 android:id="@+id/textView9"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="80dp"
                 android:background="#d32f2f" />
 
             <TextView
@@ -25,39 +31,41 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
-                android:text="0"
-                android:layout_marginLeft="20dp"
-                android:paddingRight="50dp"
+                android:text="0.0"
                 android:textColor="@color/black"
                 android:textSize="40dp" />
 
             <TextView
-                android:id="@+id/textView11"
+                android:id="@+id/txttextge"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
                 android:background="#ff5722" />
 
             <TextView
                 android:id="@+id/txtmlx"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0"
-                android:layout_marginLeft="20dp"
-                android:paddingRight="50dp"
                 android:layout_marginRight="20dp"
+                android:text="0.0"
                 android:textColor="@color/black"
                 android:textSize="40dp" />
-
         </LinearLayout>
 
 
+    </androidx.cardview.widget.CardView>
+
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/Pastelchart"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginBottom="0dp">
+        android:layout_width="400dp"
+        android:layout_height="439dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.545"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cvinfopastelchart" />
 
-    </com.github.mikephil.charting.charts.PieChart>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

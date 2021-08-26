@@ -6,7 +6,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    private static String BASE_URL = "https://bsmarthome.herokuapp.com/webresources/";
+    private static String BASE_URL = "http://aplicaciones.uteq.edu.ec/bsmarthome/webresources/";
     private static RetrofitClient retrofitClient;
     private static Retrofit retrofit;
 

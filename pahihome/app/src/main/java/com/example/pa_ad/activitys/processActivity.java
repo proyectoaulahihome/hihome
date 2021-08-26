@@ -64,7 +64,8 @@ import java.util.Map;
 
 public class processActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, iCommunicates_Fragments {
 
-    private String URL = "https://bsmarthome.herokuapp.com/webresources";
+    //private String URL = "https://bsmarthome.herokuapp.com/webresources";
+    private String URL = "http://aplicaciones.uteq.edu.ec/bsmarthome/webresources";
     private RequestQueue requestQueue;
 
     private DrawerLayout drawerLayout;

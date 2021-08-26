@@ -40,7 +40,8 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-private String URL = "https://bsmarthome.herokuapp.com/";
+//private String URL = "https://bsmarthome.herokuapp.com/";
+private String URL = "http://aplicaciones.uteq.edu.ec/bsmarthome/";
 private RequestQueue requestQueue;
 private EditText edittextuser,edittexpassword;
 private Button btnLogin, btnRegister;

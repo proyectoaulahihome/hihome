@@ -77,7 +77,8 @@ public class DetailHomeFragment extends Fragment {
     private TextView home_detail_name, txtmqgasuser, txtmlxuser, txtmqhumouser;
 
     private ImageView home_detail_img;
-    private String URL = "https://bsmarthome.herokuapp.com/webresources/";
+    //private String URL = "https://bsmarthome.herokuapp.com/webresources/";
+    private String URL = "http://aplicaciones.uteq.edu.ec/bsmarthome/webresources/";
     private RequestQueue requestQueue;
     BarChart barchart;
     private Handler handler;

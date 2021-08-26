@@ -53,7 +53,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeFragment extends Fragment {
 
-    private String URL = "https://bsmarthome.herokuapp.com/";
+   // private String URL = "https://bsmarthome.herokuapp.com/";
+    private String URL = "http://aplicaciones.uteq.edu.ec/bsmarthome/";
     private RequestQueue requestQueue;
      List<UserModel> ListElementsHome;
     private RecyclerView recyclerViewHome;
@@ -125,7 +126,6 @@ public class HomeFragment extends Fragment {
             recyclerViewHome.setLayoutManager(layoutManager);
             recyclerViewHome.setHasFixedSize(true);
 
-            //  recyclerViewHome.setLayoutManager(new LinearLayoutManager(getActivity()));
 
             Call<List<UserModel>> call = RetrofitClient.getInstance().getApi().fetchusers();
             call.enqueue(new Callback<List<UserModel>>() {

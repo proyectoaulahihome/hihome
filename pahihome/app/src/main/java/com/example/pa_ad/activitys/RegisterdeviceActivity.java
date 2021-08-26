@@ -47,7 +47,8 @@ public class RegisterdeviceActivity extends AppCompatActivity {
     private EditText namedivice;
     private Button btnsingup;
     private ProgressDialog proDialog;
-    private String URL = "https://bsmarthome.herokuapp.com/";
+    //private String URL = "https://bsmarthome.herokuapp.com/"
+    private String URL = "http://aplicaciones.uteq.edu.ec/bsmarthome/";
     private RequestQueue requestQueue;
     // variables para mantener sesion
     private SharedPreferences preferences;

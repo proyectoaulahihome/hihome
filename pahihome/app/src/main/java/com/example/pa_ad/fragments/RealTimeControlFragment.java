@@ -57,7 +57,8 @@ import retrofit2.Response;
 public class RealTimeControlFragment extends Fragment {
 
     private RequestQueue requestQueue;
-    private String URL = "https://bsmarthome.herokuapp.com/webresources/";
+    //private String URL = "https://bsmarthome.herokuapp.com/webresources/";
+    private String URL = "http://aplicaciones.uteq.edu.ec/bsmarthome/webresources/";
     private Handler handler;
     private Runnable mTicker;
     PieChart piechart;

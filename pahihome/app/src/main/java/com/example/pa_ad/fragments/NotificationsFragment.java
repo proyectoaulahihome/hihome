@@ -42,7 +42,8 @@ import java.util.List;
 import java.util.Map;
 
 public class NotificationsFragment extends Fragment {
-    private String URL = "https://bsmarthome.herokuapp.com/webresources/";
+    //private String URL = "https://bsmarthome.herokuapp.com/webresources/";
+    private String URL = "http://aplicaciones.uteq.edu.ec/bsmarthome/webresources/";
     private RequestQueue requestQueue;
     private ProgressDialog proDialog;
     iCommunicates_Fragments interfacecommunicates_Fragments;

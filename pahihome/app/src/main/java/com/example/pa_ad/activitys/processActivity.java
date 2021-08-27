@@ -512,7 +512,7 @@ public class processActivity extends AppCompatActivity implements NavigationView
         insertnotification(notificationjson);
          Uri soundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Bitmap icon = BitmapFactory.decodeResource(getResources(),
-                R.mipmap.logopa);
+                R.drawable.logopa);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(),CHANNEL_ID)
                 .setSmallIcon(R.drawable.notifications)
                 .setLargeIcon(icon)

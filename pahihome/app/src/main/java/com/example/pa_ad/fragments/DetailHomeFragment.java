@@ -89,7 +89,7 @@ public class DetailHomeFragment extends Fragment {
 
     // variables para mantener sesion
     private SharedPreferences preferences;
-    private String user_id, name, last_name, email, address, type, imguser;
+    private String user_id, name, last_name, email, address, type, imguser,device_id;
 
     @Nullable
     @Override
@@ -114,68 +114,19 @@ public class DetailHomeFragment extends Fragment {
         handler.postDelayed(mTicker,5000);//se ejecutara cada 5 segundos
     }
 
-    public void PostData(String datajson){
-        //Obtención de datos del web service utilzando Volley
-        requestQueue = Volley.newRequestQueue(getActivity());
-        StringRequest request = new StringRequest(
-                Request.Method.POST,URL+"webresources/",
-                new com.android.volley.Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        int size = response.length();
-                        response = fixEncoding(response);
-                        JSONObject json_transform = null;
-                        try {
-                            if (size > 0)
-                            {
-                                json_transform = new JSONObject(response);
-                                Log.d("Respuesta", response);
-
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new com.android.volley.Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("Error.Response", String.valueOf(error));
-                    }
-                }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String>  params = new HashMap<String, String>();
-                params.put("Content-Type", "application/json; charset=utf-8");
-                params.put("Accept", "application/json");
-                return params;
-            }
-            @Override
-            public byte[] getBody() throws AuthFailureError {
-                try {
-                    return datajson == null ? "{}".getBytes("utf-8") : datajson.getBytes("utf-8");
-                } catch (UnsupportedEncodingException uee) {
-
-                    return null;
-                }
-            }
-        };
-        requestQueue.add(request);
-    }
-
-
     private void grafi(String UserReg){
 
         if(user_id != null && email != null){
             Description descrio=new Description();
             barchart.setDescription(descrio);
 
-           // requestQueue = Volley.newRequestQueue(getActivity());
+            String datajson = "{\n" +
+                    "   \"device_id\":\""+device_id+"\"\n" +
+                    "}";
 
             StringRequest request = new StringRequest(
-                    Request.Method.GET,
-                    URL +"data/shearchforuser",
+                    Request.Method.POST,
+                    URL +"data/shearchbyruserdeviceAll",
                     new com.android.volley.Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
@@ -183,60 +134,60 @@ public class DetailHomeFragment extends Fragment {
                             boolean band = false;
                             response = fixEncoding(response);
                           //  Log.d("Respuesta", response);
+                            JSONObject json_transform = null;
+                            ArrayList<BarEntry> barEntries=new ArrayList<>();
                             try {
-                                ArrayList<BarEntry> barEntries=new ArrayList<>();
-                                JSONObject json_transform = null;
+                                if (size > 0)
+                                {
+                                    json_transform = new JSONObject(response);
+                                    if(json_transform.getString("flag").equals("true")){
+                                        JSONArray jsonArray = json_transform.getJSONArray("data");
+                                     //   Log.d("jsonArray",jsonArray.toString());
+                                       for (int i = 0; i < jsonArray.length(); i++) {
+                                            JSONObject object = jsonArray.getJSONObject(i);
+                                            if(object.getString("u_detected").equals(UserReg)){
+                                                txtmqgasuser.setText(object.getString("mqgas"));
+                                                txtmlxuser.setText(object.getString("mlx"));
+                                                barEntries.add(new BarEntry( 0, object.getInt("mqgas"), "mqgas"));
+                                                barEntries.add(new BarEntry( 1, object.getInt("mlx"), "mlx"));
+                                                band = true;
+                                            }
 
-                                JSONArray jsonarray = new JSONArray(response);
+                                            if(band){
+                                                BarDataSet barDataSet = new BarDataSet(barEntries, "Gases");
+                                                barDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+                                                //        barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                                                barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                                                barDataSet.setHighlightEnabled(true);
+                                                barDataSet.setHighLightColor(Color.RED);
+                                                barDataSet.setValueTextSize(getDefaultViewModelProviderFactory().hashCode());
+                                                barDataSet.setValueTextColor(123);
 
-                                for(int i=0; i < jsonarray.length(); i++) {
-                                    json_transform = jsonarray.getJSONObject(i);
-                                    if((json_transform.getString("u_detected")).equals(UserReg)){
-                                        txtmqgasuser.setText(json_transform.getString("mqgas"));
-                                        txtmlxuser.setText(json_transform.getString("mlx"));
-                                        barEntries.add(new BarEntry( 0, json_transform.getInt("mqgas")));
-                                        barEntries.add(new BarEntry( 1, json_transform.getInt("mlx")));
-                                        band = true;
+                                                BarData barData = new BarData(barDataSet);
+
+                                                barchart.getDescription().setText("No. of real-time gas concentrations");
+                                                barchart.getDescription().setTextSize(12);
+                                                barchart.setDrawMarkers(true);
+                                                barchart.setMarker(barchart.getMarkerView());
+                                                barchart.getAxisLeft().setAxisMinimum(0);
+                                                barchart.getXAxis().setPosition(XAxis.XAxisPosition.BOTH_SIDED);
+
+                                                ArrayList<String> labels = new ArrayList<String> ();
+
+                                                labels.add( "MQGAS");
+                                                labels.add( "MLX");
+                                                barchart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
+                                                barchart.animateY(1000);
+                                                barchart.getXAxis().setGranularityEnabled(true);
+                                                barchart.getXAxis().setGranularity(1.0f);
+                                                barchart.getXAxis().setLabelCount(barDataSet.getEntryCount());
+                                                barchart.setData(barData);
+                                            }
+                                        }
                                     }else{
-
+                                        Toast.makeText(getActivity(), "No data", Toast.LENGTH_LONG).show();
+                                        Log.d("response",response);
                                     }
-                                    if(band){
-                                        BarDataSet barDataSet = new BarDataSet(barEntries, "Gases");
-                                        barDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-                                        //        barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-                                        barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-                                        barDataSet.setHighlightEnabled(true);
-                                        barDataSet.setHighLightColor(Color.RED);
-                                        barDataSet.setValueTextSize(getDefaultViewModelProviderFactory().hashCode());
-                                        barDataSet.setValueTextColor(123);
-
-                                        BarData barData = new BarData(barDataSet);
-
-                                        barchart.getDescription().setText("No. of real-time gas concentrations");
-                                        barchart.getDescription().setTextSize(12);
-                                        barchart.setDrawMarkers(true);
-                                        barchart.setMarker(barchart.getMarkerView());
-                                        barchart.getAxisLeft().setAxisMinimum(0);
-                                        barchart.getXAxis().setPosition(XAxis.XAxisPosition.BOTH_SIDED);
-
-                                        ArrayList<String> labels = new ArrayList<String> ();
-
-                                        labels.add( "MQGAS");
-                                        labels.add( "MLX");
-
-                                        barchart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
-                                        barchart.animateY(1000);
-
-                                        barchart.getXAxis().setGranularityEnabled(true);
-                                        barchart.getXAxis().setGranularity(1.0f);
-                                        barchart.getXAxis().setLabelCount(barDataSet.getEntryCount());
-
-                                        barchart.setData(barData);
-                                    }
-
-
-                                    //    Log.d("mqgas",String.valueOf(json_transform.getInt("mqgas")));
-
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -246,7 +197,7 @@ public class DetailHomeFragment extends Fragment {
                     new com.android.volley.Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-
+                            Log.d("Error.Response", String.valueOf(error));
                         }
                     }
             ) {
@@ -256,6 +207,15 @@ public class DetailHomeFragment extends Fragment {
                     params.put("Content-Type", "application/json; charset=utf-8");
                     params.put("Accept", "application/json");
                     return params;
+                }
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    try {
+                        return datajson == null ? "{}".getBytes("utf-8") : datajson.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
+
+                        return null;
+                    }
                 }
             };
             if (requestQueue == null) {
@@ -287,6 +247,7 @@ public class DetailHomeFragment extends Fragment {
         address= preferences.getString("address",null);
         type= preferences.getString("type",null);
         imguser= preferences.getString("imguser",null);
+        device_id= preferences.getString("device_id",null);
     }
 
     @Override

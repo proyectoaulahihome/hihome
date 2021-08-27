@@ -67,7 +67,7 @@ public class RealTimeControlFragment extends Fragment {
     List<DataModel> dataModel;
     // variables para mantener sesion
     private SharedPreferences preferences;
-    private String user_id, name, last_name, email, address, type, imguser;
+    private String user_id, name, last_name, email, address, type, imguser, device_id;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -118,40 +118,48 @@ public class RealTimeControlFragment extends Fragment {
             //descrio.setText("Actividad");
             piechart.setDescription(descrio);
 
+            String datajson = "{\n" +
+                    "   \"device_id\":\""+device_id+"\"\n" +
+                    "}";
+           // Log.d("JSONUSER",datajson);
+
             //  requestQueue = Volley.newRequestQueue(getActivity());
             StringRequest request = new StringRequest(
-                    Request.Method.GET,
-                    URL +"data",
+                    Request.Method.POST,
+                    URL +"data/shearchbyruserdevice",
                     new com.android.volley.Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             int size = response.length();
                             response = fixEncoding(response);
+                            JSONObject json_transform = null;
+                            ArrayList<PieEntry> pieEntries=new ArrayList<>();
                             try {
-                                ArrayList<PieEntry> pieEntries=new ArrayList<>();
-                                JSONObject json_transform = null;
+                                if (size > 0)
+                                {
+                                    json_transform = new JSONObject(response);
+                                    if(json_transform.getString("flag").equals("true")){
+                                        JSONArray jsonArray = json_transform.getJSONArray("data");
+                                        for (int i = 0; i < jsonArray.length(); i++) {
+                                            JSONObject object = jsonArray.getJSONObject(i);
+                                            //  Log.d("name",object.get("user_id").toString());
+                                            txtmqgas.setText(object.get("mqgas").toString());
+                                            txtmlx.setText(object.get("mlx").toString());
+                                            pieEntries.add(new PieEntry(object.getInt("mqgas"), "mqgas"));
+                                            pieEntries.add(new PieEntry(object.getInt("mlx"), "mlx"));
+                                        }
+                                        piechart.animateX(2500, Easing.EasingOption.EaseOutCirc);
+                                        PieDataSet pieDataSet=new PieDataSet(pieEntries, "MQGAS" +"-"+ "MLX");
+                                        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+                                        PieData pieData=new PieData(pieDataSet);
 
-                                JSONArray jsonarray = new JSONArray(response);
-
-                                for(int i=0; i < jsonarray.length(); i++) {
-                                    json_transform = jsonarray.getJSONObject(i);
-
-                                //    Log.d("mqgas",String.valueOf(json_transform.getInt("mqgas")));
-                                    txtmqgas.setText(json_transform.getString("mqgas"));
-                                    txtmlx.setText(json_transform.getString("mlx"));
-                                 //   txtmqhumo.setText(json_transform.getString("mqhumo"));
-                                /*    pieEntries.add(new PieEntry( 1, json_transform.getString("mqgas")));
-                                    pieEntries.add(new PieEntry( 2, json_transform.getString("mlx"))); */
-                                    pieEntries.add(new PieEntry( json_transform.getInt("mqgas"), "mqgas"));
-                                    pieEntries.add(new PieEntry( json_transform.getInt("mlx"), "mlx"));
-                                 //   pieEntries.add(new PieEntry( 3, json_transform.getString("mqhumo")));
+                                        piechart.setData(pieData);
+                                    }else{
+                                        Toast.makeText(getActivity(), "No data", Toast.LENGTH_LONG).show();
+                                        Log.d("response",response);
+                                    }
                                 }
-                                piechart.animateX(2500, Easing.EasingOption.EaseOutCirc);
-                                PieDataSet pieDataSet=new PieDataSet(pieEntries, "MQGAS" +"-"+ "MLX");
-                                pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-                                PieData pieData=new PieData(pieDataSet);
 
-                                piechart.setData(pieData);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -160,7 +168,7 @@ public class RealTimeControlFragment extends Fragment {
                     new com.android.volley.Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-
+                            Log.d("Error.Response", String.valueOf(error));
                         }
                     }
             ) {
@@ -170,6 +178,15 @@ public class RealTimeControlFragment extends Fragment {
                     params.put("Content-Type", "application/json; charset=utf-8");
                     params.put("Accept", "application/json");
                     return params;
+                }
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    try {
+                        return datajson == null ? "{}".getBytes("utf-8") : datajson.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
+
+                        return null;
+                    }
                 }
             };
             if (requestQueue == null) {
@@ -200,6 +217,7 @@ public class RealTimeControlFragment extends Fragment {
         address= preferences.getString("address",null);
         type= preferences.getString("type",null);
         imguser= preferences.getString("imguser",null);
+        device_id= preferences.getString("device_id",null);
     }
 
     private void gologin() {

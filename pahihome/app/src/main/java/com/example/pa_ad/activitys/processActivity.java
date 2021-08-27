@@ -46,12 +46,19 @@ import com.example.pa_ad.R;
 import com.example.pa_ad.fragments.DetailHomeFragment;
 import com.example.pa_ad.fragments.DetailNotificationFragment;
 import com.example.pa_ad.fragments.HomeFragment;
+import com.example.pa_ad.fragments.LinkuserFragment;
 import com.example.pa_ad.fragments.NotificationsFragment;
 import com.example.pa_ad.fragments.RealTimeControlFragment;
 import com.example.pa_ad.interfaces.iCommunicates_Fragments;
 import com.example.pa_ad.models.NotificationsModel;
 import com.example.pa_ad.models.UserModel;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;
@@ -65,7 +72,7 @@ import java.util.Map;
 public class processActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, iCommunicates_Fragments {
 
     //private String URL = "https://bsmarthome.herokuapp.com/webresources";
-    private String URL = "http://aplicaciones.uteq.edu.ec/bsmarthome/webresources";
+    private String URL = "http://aplicaciones.uteq.edu.ec/bsmarthome/webresources/";
     private RequestQueue requestQueue;
 
     private DrawerLayout drawerLayout;
@@ -80,7 +87,7 @@ public class processActivity extends AppCompatActivity implements NavigationView
     private DetailNotificationFragment detailNotificationFragment;
     // variables para mantener sesion
     private SharedPreferences preferences;
-    private String user_id, name, last_name, email, address, type, imguser;
+    private String user_id, name, last_name, email, address, type, imguser,device_id;
 
     private Handler handlernotify;
     private Runnable mTickernotify;
@@ -171,6 +178,7 @@ public class processActivity extends AppCompatActivity implements NavigationView
         address = preferences.getString("address", null);
         type = preferences.getString("type", null);
         imguser = preferences.getString("imguser", null);
+        device_id= preferences.getString("device_id",null);
     }
 
     public void notificationpush(){
@@ -213,6 +221,14 @@ public class processActivity extends AppCompatActivity implements NavigationView
                 fragmentTransaction.replace(R.id.container, new RealTimeControlFragment());
                 fragmentTransaction.commit();
                 Toast.makeText(processActivity.this, "Real-time Control", Toast.LENGTH_LONG).show();
+
+                break;
+            case R.id.menuuserlink:
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.container, new LinkuserFragment());
+                fragmentTransaction.commit();
+                Toast.makeText(processActivity.this, "Link User", Toast.LENGTH_LONG).show();
 
                 break;
             case R.id.logOff:
@@ -300,82 +316,107 @@ public class processActivity extends AppCompatActivity implements NavigationView
     }
 
     private void notifi() {
-        StringRequest request = new StringRequest(
-                Request.Method.GET,
-                URL + "/data/shearchforuser",
-                new com.android.volley.Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        int size = response.length();
-                        boolean band = false;
-                        response = fixEncoding(response);
-                        //  Log.d("Respuesta", response);
-                        try {
-                            ArrayList<BarEntry> barEntries = new ArrayList<>();
+        if(user_id != null && email != null){
+            String datajson = "{\n" +
+                    "   \"device_id\":\""+device_id+"\"\n" +
+                    "}";
+
+            StringRequest request = new StringRequest(
+                    Request.Method.POST,
+                    URL +"data/shearchbyruserdeviceAll",
+                    new com.android.volley.Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            int size = response.length();
+                            boolean band = false;
+                            response = fixEncoding(response);
+                            //  Log.d("Respuesta", response);
                             JSONObject json_transform = null;
+                            try {
+                                if (size > 0)
+                                {
+                                    json_transform = new JSONObject(response);
+                                    if(json_transform.getString("flag").equals("true")){
+                                        JSONArray jsonArray = json_transform.getJSONArray("data");
+                                        //   Log.d("jsonArray",jsonArray.toString());
+                                        for (int i = 0; i < jsonArray.length(); i++) {
+                                            JSONObject object = jsonArray.getJSONObject(i);
 
-                            JSONArray jsonarray = new JSONArray(response);
-
-                            for (int i = 0; i < jsonarray.length(); i++) {
-                                json_transform = jsonarray.getJSONObject(i);
-                                //Log.e("mlx",String.valueOf(json_transform.getInt("mlx")));
-                                if ((json_transform.getInt("mlx") >= 36)) {
-                                    Log.e("ALERTA DE MLX", json_transform.getString("mlx"));
-                                    sendMyNotification("Notification por temperatura corporal alta","La temperatura corporal es de: " + json_transform.getString("mlx")
-                                            , json_transform.getString("data_id"));
-                                    createNotificationChannel();
+                                            if(object.getInt("mlx") >= 36){
+                                                sendMyNotification("Notification por temperatura corporal alta",
+                                                        "La temperatura corporal es de: " + object.getString("mqgas")
+                                                        , object.getString("data_id"));
+                                                createNotificationChannel();
+                                            }
+                                            if(object.getInt("mqgas") >= 200){
+                                                sendMyNotification("Notification por concentración de gas alta","La concentración de gas es de: " + object.getString("mqgas")
+                                                        , object.getString("data_id"));
+                                                createNotificationChannel();
+                                            }
+                                        }
+                                    }else{
+                                        Toast.makeText(processActivity.this,  "No data", Toast.LENGTH_LONG).show();
+                                        Log.d("response",response);
+                                    }
                                 }
-                                if ((json_transform.getInt("mqgas") >= 200)) {
-                                    Log.e("ALERTA DE MQGAS", json_transform.getString("mqgas"));
-                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        }
+                    },
+                    new com.android.volley.Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d("Error.Response", String.valueOf(error));
                         }
                     }
-                },
-                new com.android.volley.Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+            ) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Content-Type", "application/json; charset=utf-8");
+                    params.put("Accept", "application/json");
+                    return params;
+                }
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    try {
+                        return datajson == null ? "{}".getBytes("utf-8") : datajson.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
 
+                        return null;
                     }
                 }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("Content-Type", "application/json; charset=utf-8");
-                params.put("Accept", "application/json");
-                return params;
+            };
+            if (requestQueue == null) {
+                requestQueue = Volley.newRequestQueue(this);
+                requestQueue.add(request);
+            } else {
+                requestQueue.add(request);
             }
-        };
-        if (requestQueue == null) {
-            requestQueue = Volley.newRequestQueue(this);
-            requestQueue.add(request);
-        } else {
-            requestQueue.add(request);
         }
-        // requestQueue.add(request);
     }
 
     private void insertnotification(String datajson) {
         StringRequest request = new StringRequest(
                 Request.Method.POST,
-                URL + "/notification/insertnotification",
+                URL + "notification/insertnotification",
                 new com.android.volley.Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         int size = response.length();
                         boolean band = false;
                         response = fixEncoding(response);
-                        //  Log.d("Respuesta", response);
+                        //
                         try {
+                            Log.d("Respuesta", response);
+                            /*
                             JSONObject json_transform = null;
                             JSONArray jsonarray = new JSONArray(response);
                             for (int i = 0; i < jsonarray.length(); i++) {
                                 json_transform = jsonarray.getJSONObject(i);
                                 Toast.makeText(processActivity.this, json_transform.getString("information"), Toast.LENGTH_LONG).show();
-                            }
+                            } */
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -412,8 +453,6 @@ public class processActivity extends AppCompatActivity implements NavigationView
             requestQueue.add(request);
         }
     }
-
-
 
     private void setPendingIntent(){
         Intent intent = new Intent(this, processActivity.class);

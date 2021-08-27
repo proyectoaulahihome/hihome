@@ -44,7 +44,7 @@ import com.android.volley.Response;
 
 public class RegisterdeviceActivity extends AppCompatActivity {
     private Bundle bundle;
-    private EditText namedivice;
+    private EditText namedivice, iddevice;
     private Button btnsingup;
     private ProgressDialog proDialog;
     //private String URL = "https://bsmarthome.herokuapp.com/"
@@ -52,7 +52,7 @@ public class RegisterdeviceActivity extends AppCompatActivity {
     private RequestQueue requestQueue;
     // variables para mantener sesion
     private SharedPreferences preferences;
-    private String user_id, name, last_name, email, address, type, imguser, macdevice;
+    private String user_id, name, last_name, email, address, type, imguser,macdevice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,20 +78,18 @@ public class RegisterdeviceActivity extends AppCompatActivity {
                                 "   \"addressregister\":\""+bundle.getString("addressregister")+"\",\n" +
                                 "   \"type\":\""+"Administrador"+"\",\n" +
                                 "   \"imguser\":\""+"https://img.icons8.com/ios/452/user--v1.png"+"\",\n" +
+                                "   \"iddevice\":\""+iddevice.getText().toString()+"\",\n" +
                                 "   \"namedevice\":\""+namedivice.getText().toString()+"\",\n" +
                                 "   \"macdevice\":\""+macdevice+"\"\n" +
-
                                 "}";
                         Log.d("JSONUSER",registerjson);
                          registrationuservolley(registerjson);
-                        //   url();
-                      //  registrationuservolley(registerjson);
-                       // registrationuser();
                     }
             }
         });
     }
     private void init(){
+        iddevice = (EditText) findViewById(R.id.iddevice);
         namedivice =  (EditText) findViewById(R.id.namedivice);
         btnsingup =  (Button) findViewById(R.id.btnsingup);
         macdevice = getmacdevice();
@@ -196,13 +194,14 @@ public class RegisterdeviceActivity extends AppCompatActivity {
                         response = fixEncoding(response);
                         JSONObject json_transform = null;
                         try {
+
                             json_transform = new JSONObject(response);
                             if(json_transform.getString("status").equals("true")){
                                 Toast.makeText(RegisterdeviceActivity.this,"Usuario registrado con éxito", Toast.LENGTH_LONG).show();
                                 gologin();
                             }else{
                                 Toast.makeText(RegisterdeviceActivity.this,"Usuario no registrado", Toast.LENGTH_LONG).show();
-                                gologin();
+                              //  gologin();
                             }
                             Log.d("response",response);
 

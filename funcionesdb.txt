@@ -1,28 +1,40 @@
 ----------------------Device------------------------------
 ----------------INSERT----------------
 
-CREATE OR REPLACE FUNCTION public.insertdevice(
+CREATE OR REPLACE FUNCTION public.insertuser(
 	message_xml xml)
     RETURNS text
     LANGUAGE 'plpgsql'
-
     COST 100
-    VOLATILE 
+    VOLATILE PARALLEL UNSAFE
 AS $BODY$
-
-  DECLARE root_xpath TEXT = '/device/';
+DECLARE root_xpath TEXT = '/userdevice/';
   resul integer = 0;
   BEGIN
-    INSERT INTO public.tbldevice(user_id,namedevice,mac)values
-			((xpath(root_xpath|| 'user_id/text()', message_xml))[1]::text::integer,
-			 (xpath(root_xpath|| 'namedevice/text()', message_xml))[1],
-			 (xpath(root_xpath|| 'mac/text()', message_xml))[1]);
+    INSERT INTO public.tbluser(name,last_name,email,password,address,type,imguser, registrationdate, dateupdate, birthdaydate)values
+			((xpath(root_xpath|| 'name/text()', message_xml))[1],
+			 (xpath(root_xpath|| 'last_name/text()', message_xml))[1],
+			 (xpath(root_xpath|| 'email/text()', message_xml))[1],
+			(xpath(root_xpath|| 'password/text()', message_xml))[1],
+			(xpath(root_xpath|| 'address/text()', message_xml))[1],
+			(xpath(root_xpath|| 'type/text()', message_xml))[1],
+			(xpath(root_xpath|| 'imguser/text()', message_xml))[1],
+			now(),
+			now(),
+			now());
+
+	INSERT INTO public.tbllinkuser(device_id,user_id,mac,state,dateupdate)values
+	((xpath(root_xpath|| 'device_id/text()', message_xml))[1]::text::integer,
+	(select max(user_id) from public.tbluser),
+	(xpath(root_xpath|| 'mac/text()', message_xml))[1],
+	'true',
+	 now());
 	return resul;																			 
   END;
 $BODY$;
 
-ALTER FUNCTION public.insertdevice(xml)
-    OWNER TO pdckzidnkeycgc;
+ALTER FUNCTION public.insertuser(xml)
+    OWNER TO appdist;
 
 ----------------DELETE----------------
 ----------------UPDATE----------------

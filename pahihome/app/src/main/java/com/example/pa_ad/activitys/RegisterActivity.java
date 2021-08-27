@@ -66,7 +66,6 @@ public class RegisterActivity extends AppCompatActivity {
         repeatpasswordregister =  (EditText) findViewById(R.id.repeatpasswordregister);
         addressregister  =  (EditText) findViewById(R.id.addressregister);
         btnnextdevice =  (Button) findViewById(R.id.btnnextdevice);
-
         preferences = getSharedPreferences("Preferences", MODE_PRIVATE);
     }
 

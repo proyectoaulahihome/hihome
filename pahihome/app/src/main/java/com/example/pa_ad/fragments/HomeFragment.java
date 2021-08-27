@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
@@ -36,6 +37,10 @@ import com.example.pa_ad.interfaces.Api;
 import com.example.pa_ad.interfaces.iCommunicates_Fragments;
 import com.example.pa_ad.models.FetchUserResponse;
 import com.example.pa_ad.models.UserModel;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +48,9 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,7 +74,7 @@ public class HomeFragment extends Fragment {
     private ProgressDialog proDialog;
     // variables para mantener sesion
     private SharedPreferences preferences;
-    private String user_id, name, last_name, email, address, type, imguser;
+    private String user_id, name, last_name, email, address, type, imguser, device_id;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -105,6 +112,7 @@ public class HomeFragment extends Fragment {
         address= preferences.getString("address",null);
         type= preferences.getString("type",null);
         imguser= preferences.getString("imguser",null);
+        device_id= preferences.getString("device_id",null);
     }
 
     private void gologin() {
@@ -126,7 +134,92 @@ public class HomeFragment extends Fragment {
             recyclerViewHome.setLayoutManager(layoutManager);
             recyclerViewHome.setHasFixedSize(true);
 
+            String datajson = "{\n" +
+                    "   \"device_id\":\""+device_id+"\"\n" +
+                    "}";
+            Log.d("JSONUSER",datajson);
 
+            StringRequest request = new StringRequest(
+                    Request.Method.POST,URL+"webresources/users/usersbydevice",
+                    new com.android.volley.Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            proDialog.dismiss();
+                            ListElementsHome = new ArrayList<>();
+                            int size = response.length();
+                           // Log.d("response",response);
+                            response = fixEncoding(response);
+                            JSONObject json_transform = null;
+                            try {
+                                if (size > 0)
+                                {
+                                    json_transform = new JSONObject(response);
+                                    if(json_transform.getString("flag").equals("true")){
+                                        JSONArray jsonArray = json_transform.getJSONArray("data");
+                                        for (int i = 0; i < jsonArray.length(); i++) {
+                                            JSONObject object = jsonArray.getJSONObject(i);
+                                          //  Log.d("name",object.get("user_id").toString());
+                                            ListElementsHome.add(new UserModel(object.get("user_id").toString(),
+                                                    object.get("name").toString(),object.get("last_name").toString(),
+                                                    object.get("email").toString(),object.get("password").toString(),
+                                                    object.get("address").toString(),object.get("type").toString(),
+                                                    object.get("imguser").toString()));
+                                        }
+                                        listAdapterHome  = new ListAdapterHome(ListElementsHome, getActivity());
+                                        recyclerViewHome.setAdapter(listAdapterHome);
+
+                                        listAdapterHome.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                Toast.makeText(getActivity(),"Selecciona: " +
+                                                                ListElementsHome.get(recyclerViewHome.getChildAdapterPosition(view)).getName(),
+                                                        Toast.LENGTH_SHORT).show();
+                                                interfacecommunicates_Fragments.SendHome(ListElementsHome.get(recyclerViewHome.getChildAdapterPosition(view)));
+                                            }
+                                        });
+                                    }
+                                    else{
+                                        Toast.makeText(getActivity(), "No users linked to the device", Toast.LENGTH_LONG).show();
+                                        Log.d("response",response);
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new com.android.volley.Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d("Error.Response", String.valueOf(error));
+                        }
+                    }
+            ) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String>  params = new HashMap<String, String>();
+                    params.put("Content-Type", "application/json; charset=utf-8");
+                    params.put("Accept", "application/json");
+                    return params;
+                }
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    try {
+                        return datajson == null ? "{}".getBytes("utf-8") : datajson.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
+
+                        return null;
+                    }
+                }
+            };
+            if (requestQueue == null) {
+                requestQueue = Volley.newRequestQueue(getActivity());
+                requestQueue.add(request);
+            } else {
+                requestQueue.add(request);
+            }
+
+/*
             Call<List<UserModel>> call = RetrofitClient.getInstance().getApi().fetchusers();
             call.enqueue(new Callback<List<UserModel>>() {
                 @Override
@@ -150,7 +243,7 @@ public class HomeFragment extends Fragment {
                 public void onFailure(Call<List<UserModel>> call, Throwable t) {
 
                 }
-            });
+            }); */
         }else{
             Toast.makeText(getActivity(), "No session", Toast.LENGTH_LONG).show();
             gologin();

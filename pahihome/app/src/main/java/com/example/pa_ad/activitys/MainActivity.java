@@ -112,6 +112,7 @@ private String user_id, name, last_name, email, address, type, imguser;
                                     editor.putString("address",json_transform.getJSONObject("data").getString("address"));
                                     editor.putString("type",json_transform.getJSONObject("data").getString("type"));
                                     editor.putString("imguser",json_transform.getJSONObject("data").getString("imguser"));
+                                    editor.putString("device_id",json_transform.getJSONObject("data").getString("device_id"));
                                     editor.commit();
                                     goMenu();
                                 }

@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      PostgreSQL 8                                 */
-/* Created on:     18/8/2021 0:36:52                            */
+/* Created on:     26/8/2021 14:28:43                           */
 /*==============================================================*/
 
 
@@ -10,11 +10,17 @@ drop index TBLDATA_PK;
 
 drop table TBLDATA;
 
-drop index RTBLUSER_RTBLDEVICE_FK;
-
 drop index TBLDEVICE_PK;
 
 drop table TBLDEVICE;
+
+drop index RTBLUSER_TBLLINKUSER_FK;
+
+drop index RTLBDEVICE_TBLLINKUSER_FK;
+
+drop index TBLLINKUSER_PK;
+
+drop table TBLLINKUSER;
 
 drop index RTBLDATA_TBLNOTI_FK;
 
@@ -59,9 +65,8 @@ DEVICE_ID
 /*==============================================================*/
 create table TBLDEVICE (
    DEVICE_ID            SERIAL               not null,
-   USER_ID              INT4                 not null,
    NAMEDEVICE           VARCHAR(100)         not null,
-   MAC                  VARCHAR(40)          not null,
+   STATE                BOOL                 not null,
    constraint PK_TBLDEVICE primary key (DEVICE_ID)
 );
 
@@ -73,9 +78,36 @@ DEVICE_ID
 );
 
 /*==============================================================*/
-/* Index: RTBLUSER_RTBLDEVICE_FK                                */
+/* Table: TBLLINKUSER                                           */
 /*==============================================================*/
-create  index RTBLUSER_RTBLDEVICE_FK on TBLDEVICE (
+create table TBLLINKUSER (
+   LINKUSER_ID          SERIAL               not null,
+   DEVICE_ID            INT4                 not null,
+   USER_ID              INT4                 not null,
+   MAC                  VARCHAR(50)          not null,
+   STATE                BOOL                 not null,
+   DATEUPDATE           DATE                 not null,
+   constraint PK_TBLLINKUSER primary key (LINKUSER_ID)
+);
+
+/*==============================================================*/
+/* Index: TBLLINKUSER_PK                                        */
+/*==============================================================*/
+create unique index TBLLINKUSER_PK on TBLLINKUSER (
+LINKUSER_ID
+);
+
+/*==============================================================*/
+/* Index: RTLBDEVICE_TBLLINKUSER_FK                             */
+/*==============================================================*/
+create  index RTLBDEVICE_TBLLINKUSER_FK on TBLLINKUSER (
+DEVICE_ID
+);
+
+/*==============================================================*/
+/* Index: RTBLUSER_TBLLINKUSER_FK                               */
+/*==============================================================*/
+create  index RTBLUSER_TBLLINKUSER_FK on TBLLINKUSER (
 USER_ID
 );
 
@@ -136,9 +168,14 @@ alter table TBLDATA
       references TBLDEVICE (DEVICE_ID)
       on delete restrict on update restrict;
 
-alter table TBLDEVICE
-   add constraint FK_TBLDEVIC_RTBLUSER__TBLUSER foreign key (USER_ID)
+alter table TBLLINKUSER
+   add constraint FK_TBLLINKU_RTBLUSER__TBLUSER foreign key (USER_ID)
       references TBLUSER (USER_ID)
+      on delete restrict on update restrict;
+
+alter table TBLLINKUSER
+   add constraint FK_TBLLINKU_RTLBDEVIC_TBLDEVIC foreign key (DEVICE_ID)
+      references TBLDEVICE (DEVICE_ID)
       on delete restrict on update restrict;
 
 alter table TBLNOTIFICATIONS

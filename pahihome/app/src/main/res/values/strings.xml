@@ -6,7 +6,7 @@
     <string name="realtimecontrol">Real-time Control</string>
     <string name="collectionadm">CollectionAdm</string>
     <string name="inboxadm">InboxAdm</string>
-    <string name="ordersadm">OrdersAdm</string>
+    <string name="userlink">User link</string>
     <string name="logOff">log off</string>
     <string name="others">Others</string>
     <string name="settings">Settings</string>
@@ -22,6 +22,7 @@
     <!-- Register -->
     <string name="macdivice">Mac for Device</string>
     <string name="fistnameregister">Fist Name</string>
+    <string name="iddevice">Device code</string>
     <string name="namedevice">IoT device name</string>
     <string name="lastameregister">Last Name</string>
     <string name="emailregister">Email</string>

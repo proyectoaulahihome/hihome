@@ -17,6 +17,11 @@
         android:title="@string/realtimecontrol"/>
 
     <item
+        android:id="@+id/menuuserlink"
+        android:icon="@drawable/ic_baseline_supervised_user_circle_24"
+        android:title="@string/userlink"/>
+
+    <item
         android:id="@+id/logOff"
         android:icon="@drawable/ic_baseline_login_24"
         android:title="@string/logOff"/>

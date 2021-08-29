@@ -29,5 +29,4 @@ public interface Api {
 
     @POST("Registration")
     Call<RegistrationModel> PostDataRegistrationuser(@Body RegistrationModel registrationModel);
-
 }

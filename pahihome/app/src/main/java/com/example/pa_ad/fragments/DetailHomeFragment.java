@@ -235,7 +235,6 @@ public class DetailHomeFragment extends Fragment {
     }
 
     private void init(){
-
         preferences = this.getActivity().getSharedPreferences("Preferences", Context.MODE_PRIVATE);
     }
 

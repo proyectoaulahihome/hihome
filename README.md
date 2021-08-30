@@ -1,5 +1,7 @@
 # PROYECTO DE AULA - HiHome
 
+# TEMA DEL PROYECTO: Sistema de smarth home enfocado en la prevención de incendios y el control de temperatura según el perfil de los habitantes
+
 # Capturas de pantalla
 
 # Captura 1 - Login de la App

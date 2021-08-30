@@ -44,6 +44,79 @@
 
 ![](https://github.com/proyectoaulahihome/hihome/blob/main/pahihome/Pantallas/notificacionesregistradas.png)
 
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ # RECONOCIMIENTO FACIAL 
+ 
+ # PAQUETES NECESARIOS 
+
+ # ngrok 
+ En el siguiente enlace puede encontrar la página oficial para la instalación de este paquete -> https://ngrok.com/download
+
+ # opencv 
+ En el siguiente enlace puede encontrar la página oficial para la instalación de este paquete  -> https://pypi.org/project/opencv-python/
+
+# Capturas de pantalla para el reconocimiento facial
+
+# Captura 1 - Script para la captura de rostros
+
+![](https://github.com/proyectoaulahihome/hihome/blob/main/pahihome/Pantallas/capturandoRostros.png)
+
+# Captura 2 - Script para el entrenamiento del algoritmo
+
+![](https://github.com/proyectoaulahihome/hihome/blob/main/pahihome/Pantallas/entrenandoalgoritmo.png)
+
+# Captura 3 - Script para el reconocimiento facial
+
+![](https://github.com/proyectoaulahihome/hihome/blob/main/pahihome/Pantallas/reconocimiento_facial.png)
+
+
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# DISPOSITIVO
+
+# Captura de pantalla del código arduino para el arduino uno con sus sensores
+
+![]( https://github.com/proyectoaulahihome/hihome/blob/main/pahihome/Pantallas/codigoplacaarduino.png)
+
+# Captura de pantalla del código arduino para el ESP8266 - Conexión wifi y consumo de WebServices POST 
+
+![](https://github.com/proyectoaulahihome/hihome/blob/main/pahihome/Pantallas/codigoesp8266.png)
+
+# Fotos del dispositivo en físico 
+
+![](https://github.com/proyectoaulahihome/hihome/blob/main/pahihome/Pantallas/activando_sensorIR.png)
+
+![](https://github.com/proyectoaulahihome/hihome/blob/main/pahihome/Pantallas/dispositivo_frontalsuperior.png)
+
+![](https://github.com/proyectoaulahihome/hihome/blob/main/pahihome/Pantallas/dispositivo_superior.png)
+
+![](https://github.com/proyectoaulahihome/hihome/blob/main/pahihome/Pantallas/dispositivo_vistadiagonalsuperior.png)
+
+![](https://github.com/proyectoaulahihome/hihome/blob/main/pahihome/Pantallas/dispositivo_vistadiagonalsuperior.png)
+
+![](https://github.com/proyectoaulahihome/hihome/blob/main/pahihome/Pantallas/dispositivo_vistalateral.png)
+
+![](https://github.com/proyectoaulahihome/hihome/blob/main/pahihome/Pantallas/dispositivoabierto_frontal.png)
+
+![](https://github.com/proyectoaulahihome/hihome/blob/main/pahihome/Pantallas/sensoresmq2_mlx.png)
+
+
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# BACK-END DEL PROYECTO
+
+# El siguiente enlace redirecciona al backend del proyecto
+
+![](https://github.com/proyectoaulahihome/backend-hihome)
+
+
+
+
+
+
+
+
 
 
 

@@ -108,8 +108,7 @@
 
 # El siguiente enlace redirecciona al backend del proyecto
 
-![](https://github.com/proyectoaulahihome/backend-hihome)
-
+Enlace -> https://github.com/proyectoaulahihome/backend-hihome
 
 
 
